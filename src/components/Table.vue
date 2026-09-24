@@ -8,7 +8,7 @@
 
     
 
-    fetch(`${props.URL}/${props.path}`, {
+    fetch(`${props.URL}/${props.path}/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
