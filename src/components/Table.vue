@@ -2,10 +2,11 @@
     import { ref } from "vue";
 
     const props = defineProps(['URL', 'path']);
-
-    const result = ref();
-
     console.log(props.path)
+
+    const result = ref([{}]);
+
+    
 
     fetch(`${props.URL}/${props.path}`, {
         method: "GET",
@@ -20,13 +21,14 @@
             result.value = response.message;
         })
     })
+    .catch((error) => {
+        console.error(`onRejected function called: ${error.message}`);
+    })
 </script>
 
 
 
 <template>
-
-    <div>tests</div>
 
     <table>
         <thead>
@@ -51,15 +53,18 @@
         <tr>
             <template v-for="(item, key) in result[0]">
             <td v-if="key != 'uuid'">
-                <input :placeholder="key">
+                <div>
+                    <input :placeholder="key">
+                </div>
             </td>
             </template>
-            <td><input type="button" value="submit"></td>
+            <td>
+                <input type="button" value="submit">
+            </td>
         </tr>
 
         </tbody>
     </table>
-
 </template>
 
 
@@ -67,7 +72,24 @@
 <style scoped>
 
     table {
+        margin: 5px;
+        table-layout: fixed;
         border-color: red;
         border-style: solid;
+    }
+    td {
+        position: relative;
+    }
+    td div {
+        position: absolute;
+        display: inline-block;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+    input {
+        width: 100%;
+        box-sizing: border-box;
     }
 </style>

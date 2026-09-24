@@ -12,9 +12,6 @@
 
 <template>
 
-  <Table :URL="URL" :path="'injections'"></Table>
-  <Table :URL="URL" :path="'tests'"></Table>
-
   <input
     type="url"
     name="url"
@@ -25,8 +22,22 @@
     required 
     :value="URL"
     @change="event => URL = event.target.value"/>
+    
+
+  <div style="display: flex;">
+    <Table :URL="URL" :path="'injections'" id="injectionsTable"></Table>
+  
+    <Table :URL="URL" :path="'tests'" id="testsTable"></Table>
+  </div>
 </template>
 
 <style scoped>
+
+#injectionsTable {
+  width: 60%;
+}
+#testsTable {
+  width: 40%;
+}
 
 </style>
