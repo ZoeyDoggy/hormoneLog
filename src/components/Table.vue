@@ -6,7 +6,7 @@
 
     const result = ref([{}]);
 
-    const newEntry = ref({});
+    const params = ref(new URLSearchParams());
 
     const inputType = ref({
         'time': 'datetime-local',
@@ -15,22 +15,58 @@
         'value': 'number',
     });
 
-    fetch(`${props.URL}/${props.path}/`, {
-        method: "GET",
+    pullData();
+
+    function pullData() {
+        result.value = [{}];
+
+        fetch(`${props.URL}/${props.path}/`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then((response) => {
+        response.json()
+            .then((response) => {
+                //console.log(response.message)
+                result.value = response.message;
+            })
+        })
+        .catch((error) => {
+            console.error(`onRejected function called: ${error.message}`);
+        })
+    }
+
+    function updateParams(key, value) {
+        
+        //convert human readable time to unix as seconds
+        if (key == 'time') {
+            value = new Date(value).getTime()/1000;
+        }
+        params.value.append(key, value)
+    }
+
+    function postObject () {
+
+        console.log(params.value.toString());
+
+        fetch(`${props.URL}/${props.path}?${params.value.toString()}`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
         }
-    })
-    .then((response) => {
-    response.json()
-        .then((response) => {
-            //console.log(response.message)
-            result.value = response.message;
         })
-    })
-    .catch((error) => {
-        console.error(`onRejected function called: ${error.message}`);
-    })
+        .then((response) => {
+            response.json()
+                .then((response) => {
+                    console.log(response.message)
+                    pullData();
+            })
+        })
+
+        params.value = new URLSearchParams();
+    }
 </script>
 
 <template>
@@ -39,7 +75,7 @@
             <thead>
                 <tr>
                     <template v-for="item in Object.keys(result[0])">
-                        <th  v-if="item != 'uuid'">{{ item }}</th>
+                        <th  v-if="item != 'uuid'" :class="`${item}Column`">{{ item }}</th>
                     </template>
         
                 </tr>
@@ -59,19 +95,20 @@
                     <template v-for="(item, key) in result[0]">
                         <td v-if="key != 'uuid'">
                             <div>
-                                <input :type="inputType[key]" :placeholder="key" :value="newEntry[key]" @change="event => newEntry[key] = event.target.value">
+                                <input :type="inputType[key]" :placeholder="key" :value="params.get(key)" @change="event => updateParams(key, event.target.value)">
                             </div>
                         </td>
                     </template>
                     <td>
-                        <input type="button" value="submit">
+                        <input type="button" value="submit" @click="postObject">
                     </td>
                 </tr>
     
             </tbody>
         </table>
-   
-        <p>{{ newEntry }}</p>
+        
+
+        {{ params }}
     </div>
 </template>
 
@@ -99,5 +136,8 @@
     input {
         width: 100%;
         box-sizing: border-box;
+    }
+    .timeColumn {
+        width: 160px;
     }
 </style>
