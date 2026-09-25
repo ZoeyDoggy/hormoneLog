@@ -1,12 +1,19 @@
 <script setup>
-    import { ref } from "vue";
+    import { ref, watch } from "vue";
 
     const props = defineProps(['URL', 'path']);
     console.log(props.path)
 
     const result = ref([{}]);
 
-    
+    const newEntry = ref({});
+
+    const inputType = ref({
+        'time': 'datetime-local',
+        'concentration': 'number',
+        'dose': 'number',
+        'value': 'number',
+    });
 
     fetch(`${props.URL}/${props.path}/`, {
         method: "GET",
@@ -17,7 +24,7 @@
     .then((response) => {
     response.json()
         .then((response) => {
-            console.log(response.message)
+            //console.log(response.message)
             result.value = response.message;
         })
     })
@@ -26,45 +33,46 @@
     })
 </script>
 
-
-
 <template>
-
-    <table>
-        <thead>
-        <tr>
-            
-            <template v-for="item in Object.keys(result[0])">
-            <th  v-if="item != 'uuid'">{{ item }}</th>
-            </template>
-
-        </tr>
-        </thead>
-        <tbody>
+    <div>
+       <table>
+            <thead>
+                <tr>
+                    <template v-for="item in Object.keys(result[0])">
+                        <th  v-if="item != 'uuid'">{{ item }}</th>
+                    </template>
         
-        <tr v-for="row in result">
-            <template v-for="(data, key) in row">
-            <td v-if="key != 'uuid'">{{ data }}</td>
-            </template>
-            <td><input type="button" value="edit"></td>
-            <td><input type="button" value="delete"></td>
-        </tr>
+                </tr>
+            </thead>
 
-        <tr>
-            <template v-for="(item, key) in result[0]">
-            <td v-if="key != 'uuid'">
-                <div>
-                    <input :placeholder="key">
-                </div>
-            </td>
-            </template>
-            <td>
-                <input type="button" value="submit">
-            </td>
-        </tr>
-
-        </tbody>
-    </table>
+            <tbody>
+           
+                <tr v-for="row in result" :key="row.uuid">
+                    <template v-for="(data, key) in row">
+                        <td v-if="key != 'uuid'">{{ data }}</td>
+                    </template>
+                    <td><input type="button" value="edit"></td>
+                    <td><input type="button" value="delete"></td>
+                </tr>
+        
+                <tr>
+                    <template v-for="(item, key) in result[0]">
+                        <td v-if="key != 'uuid'">
+                            <div>
+                                <input :type="inputType[key]" :placeholder="key" :value="newEntry[key]" @change="event => newEntry[key] = event.target.value">
+                            </div>
+                        </td>
+                    </template>
+                    <td>
+                        <input type="button" value="submit">
+                    </td>
+                </tr>
+    
+            </tbody>
+        </table>
+   
+        <p>{{ newEntry }}</p>
+    </div>
 </template>
 
 
