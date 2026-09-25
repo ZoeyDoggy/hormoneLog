@@ -44,7 +44,7 @@
         if (key == 'time') {
             value = new Date(value).getTime()/1000;
         }
-        params.value.append(key, value)
+        params.value.set(key, value)
     }
 
     function postObject () {
