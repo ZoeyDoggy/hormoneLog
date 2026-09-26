@@ -4,7 +4,7 @@
 
 - [x] new line submission
 - [x] line editing
-    - [ ] fix empty fields filling with null
+    - [x] fix empty fields filling with null
 - [ ] line deletion
 
 - [x] pretty formatting time column

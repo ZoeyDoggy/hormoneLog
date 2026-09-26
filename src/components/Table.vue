@@ -138,9 +138,7 @@
                 if (item == 'time') {
                     array[item] = new Date(array[item]).getTime();
                 }
-                if (array[item] == 'null') {
-                    putParams.value.set(item, '')
-                } else {
+                if (array[item] != 'null' && array[item] != null) {
                     putParams.value.set(item, array[item])
                 }
             }
