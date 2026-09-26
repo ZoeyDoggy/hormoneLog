@@ -42,7 +42,7 @@
         
         //convert human readable time to unix as seconds
         if (key == 'time') {
-            value = new Date(value).getTime()/1000;
+            value = new Date(value).getTime();
         }
         params.value.set(key, value)
     }
@@ -85,7 +85,8 @@
            
                 <tr v-for="row in result" :key="row.uuid">
                     <template v-for="(data, key) in row">
-                        <td v-if="key != 'uuid'">{{ data }}</td>
+                        <td v-if="key != 'uuid' && key != 'time'">{{ data }}</td>
+                        <td v-if="key == 'time'">{{ new Date(data).toLocaleString("en-US", { year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit' }) }}</td>
                     </template>
                     <td><input type="button" value="edit"></td>
                     <td><input type="button" value="delete"></td>
