@@ -8,6 +8,7 @@
     const result = ref([{}]);
 
     const postParams = ref(new URLSearchParams());
+    const putParams = ref(new URLSearchParams());
 
     const focusRow = ref();
 
@@ -52,6 +53,17 @@
         console.log(postParams.value.toString())
     }
 
+    function updatePutParams(key, value) {
+        
+        //convert human readable time to unix as seconds
+        if (key == 'time') {
+            value = new Date(value).getTime();
+        }
+        putParams.value.set(key, value)
+
+        console.log(putParams.value.toString())
+    }
+
     function postObject () {
 
         console.log(postParams.value.toString());
@@ -73,23 +85,79 @@
         postParams.value = new URLSearchParams();
     }
 
-    function formatInputDate(date) {
-        var now = new Date(date);
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        return now.toISOString().slice(0,16);
+    function putObject () {
+
+        focusRow.value = '';
+
+        fetch(`${props.URL}/${props.path}?${putParams.value.toString()}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        }
+        })
+        .then((response) => {
+            response.json()
+                .then((response) => {
+                    console.log(response.message)
+                    pullData();
+            })
+        })
+
+        putParams.value = new URLSearchParams();
     }
+
+    function formatInput(key, data) {
+
+        if (key == 'time') {
+            var now = new Date(parseInt(data));
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            return now.toISOString().slice(0,16);
+        } else {
+            if (data == 'null') {
+                return '';
+            } else {
+                return data;
+            }
+        }
+    }
+
+    function formatData(key, data) {
+        if (key == 'time') {
+            return new Date(data).toLocaleString("en-US", { year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+        } else {
+            return data;
+        }
+    }
+
+    watch(focusRow, (newX) => {
+
+        if (newX != '') {
+            const array = result.value.find((element) => element.uuid == newX)
+            for (const item in array) {
+
+                if (item == 'time') {
+                    array[item] = new Date(array[item]).getTime();
+                }
+                if (array[item] == 'null') {
+                    putParams.value.set(item, '')
+                } else {
+                    putParams.value.set(item, array[item])
+                }
+            }
+        } else {
+            putParams.value = new URLSearchParams()
+        }
+    })
 </script>
 
 <template>
     <div>
-        {{ focusRow }}
        <table>
             <thead>
                 <tr>
                     <template v-for="item in Object.keys(result[0])">
                         <th  v-if="item != 'uuid'" :class="`${item}Column`">{{ item }}</th>
                     </template>
-        
                 </tr>
             </thead>
 
@@ -97,28 +165,21 @@
            
                 <tr v-for="row in result" :key="row.uuid">
                     <template v-for="(data, key) in row">
-                        <template v-if="focusRow != row.uuid">
-                        
-                            <td v-if="key != 'uuid' && key != 'time'">{{ data }}</td>
-                            <td v-if="key == 'time'">{{ new Date(data).toLocaleString("en-US", { year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit' }) }}</td>
 
+                        <template v-if="key != 'uuid'">
+                            <td v-if="focusRow != row.uuid">{{ formatData(key, data) }}</td>
+                            <td v-else><input :type="inputType[key]" :placeholder="key" :value="formatInput(key, putParams.get(key))" @change="event => updatePutParams(key, event.target.value)"></td>
                         </template>
-                        <template v-else>
-                            <td v-if="key != 'uuid' && key != 'time'"><input :type="inputType[key]" :placeholder="key" :value="data"></td>
-                            <td v-if="key == 'time'"><input :type="inputType[key]" :placeholder="key" :value="formatInputDate(data)"></td>
-                        </template>
+
                     </template>
-
                     
-                        <td v-if="focusRow != row.uuid"><button id="rowEdit" @click="focusRow = row.uuid"><SquarePen /></button></td>
-                        <template v-else>
-                            <td><button><Save /></button></td>
-                            <td><button><Trash /></button></td>
-                            <td><button @click="focusRow = ''"><X /></button></td>
-                        </template>
+                    <td v-if="focusRow != row.uuid"><button id="rowEdit" @click="focusRow = row.uuid"><SquarePen /></button></td>
+                    <template v-else>
+                        <td><button @click="putObject"><Save /></button></td>
+                        <td><button><Trash /></button></td>
+                        <td><button @click="focusRow = ''"><X /></button></td>
+                    </template>
                         
-                    
-
                 </tr>
         
                 <tr>
