@@ -1,6 +1,8 @@
 <script setup>
     import { ref, watch } from "vue";
 
+    const emit = defineEmits(['update'])
+
     import { SquarePen, Save, Trash, X, Check } from '@lucide/vue';
 
     const props = defineProps(['URL', 'path']);
@@ -49,8 +51,6 @@
             value = new Date(value).getTime();
         }
         postParams.value.set(key, value)
-
-        console.log(postParams.value.toString())
     }
 
     function updatePutParams(key, value) {
@@ -60,13 +60,9 @@
             value = new Date(value).getTime();
         }
         putParams.value.set(key, value)
-
-        console.log(putParams.value.toString())
     }
 
     function postObject () {
-
-        console.log(postParams.value.toString());
 
         fetch(`${props.URL}/${props.path}?${postParams.value.toString()}`, {
         method: "POST",
@@ -107,7 +103,6 @@
     }
 
     function deleteObject () {
-        console.log(putParams.value.get('uuid'))
         focusRow.value = '';
 
         fetch(`${props.URL}/${props.path}?uuid=${putParams.value.get('uuid')}`, {
@@ -167,56 +162,59 @@
             putParams.value = new URLSearchParams()
         }
     })
+
+    watch(result, (newResult) => {
+
+        emit('update', newResult);
+    })
 </script>
 
 <template>
-    <div>
-       <table>
-            <thead>
-                <tr>
-                    <template v-for="item in Object.keys(result[0])">
-                        <th  v-if="item != 'uuid'" :class="`${item}Column`">{{ item }}</th>
-                    </template>
-                </tr>
-            </thead>
+    <table>
+        <thead>
+            <tr>
+                <template v-for="item in Object.keys(result[0])">
+                    <th  v-if="item != 'uuid'" :class="`${item}Column`">{{ item }}</th>
+                </template>
+            </tr>
+        </thead>
 
-            <tbody>
-           
-                <tr v-for="row in result" :key="row.uuid">
-                    <template v-for="(data, key) in row">
-
-                        <template v-if="key != 'uuid'">
-                            <td v-if="focusRow != row.uuid">{{ formatData(key, data) }}</td>
-                            <td v-else><input :type="inputType[key]" :placeholder="key" :value="formatInput(key, putParams.get(key))" @change="event => updatePutParams(key, event.target.value)"></td>
-                        </template>
-
-                    </template>
-                    
-                    <td v-if="focusRow != row.uuid"><button id="rowEdit" @click="focusRow = row.uuid"><SquarePen /></button></td>
-                    <template v-else>
-                        <td><button @click="putObject"><Save /></button></td>
-                        <td><button @click="deleteObject"><Trash /></button></td>
-                        <td><button @click="focusRow = ''"><X /></button></td>
-                    </template>
-                        
-                </tr>
+        <tbody>
         
-                <tr>
-                    <template v-for="(item, key) in result[0]">
-                        <td v-if="key != 'uuid'">
-                            <div>
-                                <input :type="inputType[key]" :placeholder="key" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
-                            </div>
-                        </td>
+            <tr v-for="row in result" :key="row.uuid">
+                <template v-for="(data, key) in row">
+
+                    <template v-if="key != 'uuid'">
+                        <td v-if="focusRow != row.uuid">{{ formatData(key, data) }}</td>
+                        <td v-else><input :type="inputType[key]" :placeholder="key" :value="formatInput(key, putParams.get(key))" @change="event => updatePutParams(key, event.target.value)"></td>
                     </template>
-                    <td>
-                        <input type="button" value="submit" @click="postObject">
-                    </td>
-                </tr>
+
+                </template>
+                
+                <td v-if="focusRow != row.uuid"><button id="rowEdit" @click="focusRow = row.uuid"><SquarePen /></button></td>
+                <template v-else>
+                    <td><button @click="putObject"><Save /></button></td>
+                    <td><button @click="deleteObject"><Trash /></button></td>
+                    <td><button @click="focusRow = ''"><X /></button></td>
+                </template>
+                    
+            </tr>
     
-            </tbody>
-        </table>
-    </div>
+            <tr>
+                <template v-for="(item, key) in result[0]">
+                    <td v-if="key != 'uuid'">
+                        <div>
+                            <input :type="inputType[key]" :placeholder="key" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
+                        </div>
+                    </td>
+                </template>
+                <td>
+                    <input type="button" value="submit" @click="postObject">
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
 </template>
 
 
@@ -229,6 +227,7 @@
     }
 
     table {
+        width: 100%;
         margin: 5px;
         table-layout: fixed;
         border-color: red;

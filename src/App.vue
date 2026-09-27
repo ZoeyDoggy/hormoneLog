@@ -8,6 +8,9 @@
   watch(URL, (newURL) => {
     localStorage.setItem("URL", newURL);
   })
+
+  const injections = ref();
+  const tests = ref();
 </script>
 
 <template>
@@ -25,9 +28,9 @@
     
 
   <div style="display: flex;">
-    <Table :URL="URL" :path="'injections'" id="injectionsTable"></Table>
+    <Table :URL="URL" :path="'injections'" id="injectionsTable" @update="callback => injections = callback"></Table>
   
-    <Table :URL="URL" :path="'tests'" id="testsTable"></Table>
+    <Table :URL="URL" :path="'tests'" id="testsTable" @update="callback => tests = callback"></Table>
   </div>
 </template>
 
