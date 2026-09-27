@@ -106,6 +106,27 @@
         putParams.value = new URLSearchParams();
     }
 
+    function deleteObject () {
+        console.log(putParams.value.get('uuid'))
+        focusRow.value = '';
+
+        fetch(`${props.URL}/${props.path}?uuid=${putParams.value.get('uuid')}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        }
+        })
+        .then((response) => {
+            response.json()
+                .then((response) => {
+                    console.log(response.message)
+                    pullData();
+            })
+        })
+
+        putParams.value = new URLSearchParams();
+    }
+
     function formatInput(key, data) {
 
         if (key == 'time') {
@@ -174,7 +195,7 @@
                     <td v-if="focusRow != row.uuid"><button id="rowEdit" @click="focusRow = row.uuid"><SquarePen /></button></td>
                     <template v-else>
                         <td><button @click="putObject"><Save /></button></td>
-                        <td><button><Trash /></button></td>
+                        <td><button @click="deleteObject"><Trash /></button></td>
                         <td><button @click="focusRow = ''"><X /></button></td>
                     </template>
                         
