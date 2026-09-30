@@ -27,7 +27,7 @@
     :value="URL"
     @change="event => URL = event.target.value"/>
     
-    <Graph></Graph>
+    <Graph :injectionsData="injections" :testsData="tests"></Graph>
 
   <div style="display: flex;">
     <Table :URL="URL" :path="'injections'" id="injectionsTable" @update="callback => injections = callback"></Table>

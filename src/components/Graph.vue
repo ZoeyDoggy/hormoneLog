@@ -15,9 +15,22 @@
         terminalEliminationTime3C
     } from '../models.js';
 
+    const props = defineProps(['injectionsData', 'testsData']);
+
     const graphDiv = useTemplateRef('graphDiv');
 
-    function plot(log) {
+    
+
+    onMounted(() => {
+        
+
+        watch(() => props.injectionsData, () => {
+            console.log(props.injectionsData);
+            plot();
+        })
+    })
+
+    function plot() {
 
         // if (log.length === 0) {
             
@@ -59,42 +72,59 @@
         //     targetRange[i].time = epoch + Math.round(targetRange[i].time * 86400) * 1000;
         // }
 
+        // const plotCanvas = Plot.plot({
+        //     x: {type: "utc", grid: true},
+        //     width: 1500,
+        //     marks: [
+        //     Plot.ruleY([-20]),
+        //     Plot.dot(filterByEster(log, 'Enanthate'), {
+        //         x: "unixTime", 
+        //         y: "mlDose",
+        //         r: 2.5,
+        //         fill: flavors.mocha.colors.mauve.hex,
+        //     }),
+        //     Plot.dot(filterByEster(log, 'Valerate'), {
+        //         x: "unixTime", 
+        //         y: "mlDose",
+        //         r: 2.5,
+        //         fill: flavors.mocha.colors.blue.hex,
+        //     }),
+        //     Plot.line(customdoseCurve, {
+        //         x: 'Time',
+        //         y: 'E2',
+        //         r: 1,
+        //         stroke: flavors.mocha.colors.yellow.hex,
+        //     }),
+        //     Plot.areaY(targetRange, {
+        //         x: 'time', y1: 'lower', y2: 'upper',
+        //         fill: flavors.mocha.colors.yellow.hex,
+        //         fillOpacity: 0.15
+        //     }),
+        //     Plot.text(['WPATH target range'], {
+        //         x: epoch + Math.round(interval * 86400) * 1000, y: 150 * conversionFactor, rotate: 90,
+        //         fill: flavors.mocha.colors.yellow.hex,
+        //         frameAnchor: 'middle', textAnchor: 'middle', lineAnchor: 'bottom'
+        //     })
+        //     ]
+        // })
 
         const plotCanvas = Plot.plot({
             x: {type: "utc", grid: true},
-            width: 1500,
+            width: graphDiv.value.offsetWidth,
             marks: [
-            Plot.ruleY([-20]),
-            Plot.dot(filterByEster(log, 'Enanthate'), {
-                x: "unixTime", 
-                y: "mlDose",
-                r: 2.5,
-                fill: flavors.mocha.colors.mauve.hex,
-            }),
-            Plot.dot(filterByEster(log, 'Valerate'), {
-                x: "unixTime", 
-                y: "mlDose",
-                r: 2.5,
-                fill: flavors.mocha.colors.blue.hex,
-            }),
-            Plot.line(customdoseCurve, {
-                x: 'Time',
-                y: 'E2',
-                r: 1,
-                stroke: flavors.mocha.colors.yellow.hex,
-            }),
-            Plot.areaY(targetRange, {
-                x: 'time', y1: 'lower', y2: 'upper',
-                fill: flavors.mocha.colors.yellow.hex,
-                fillOpacity: 0.15
-            }),
-            Plot.text(['WPATH target range'], {
-                x: epoch + Math.round(interval * 86400) * 1000, y: 150 * conversionFactor, rotate: 90,
-                fill: flavors.mocha.colors.yellow.hex,
-                frameAnchor: 'middle', textAnchor: 'middle', lineAnchor: 'bottom'
-            })
+                // Plot.ruleY([-20]),
+                Plot.frame(),
+                Plot.text(["Hello, world!"], {frameAnchor: "middle"}),
+
+                Plot.dot(props.injectionsData, {
+                    x: "time", 
+                    y: "dose",
+                    r: 10,
+                    fill: 'red',
+                }),
             ]
         })
+
         graphDiv.value.innerHTML = '';
         graphDiv.value.append(plotCanvas);
     }
