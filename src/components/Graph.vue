@@ -25,12 +25,20 @@
         
 
         watch(() => props.injectionsData, () => {
-            console.log(props.injectionsData);
+            //console.log(props.injectionsData);
+            plot();
+        })
+        watch(() => props.testsData, () => {
+            //console.log(props.testsData);
             plot();
         })
     })
 
     function plot() {
+
+        if (props.injectionsData == undefined || props.testsData == undefined) {
+            return;
+        }
 
         // if (log.length === 0) {
             
@@ -119,8 +127,14 @@
                 Plot.dot(props.injectionsData, {
                     x: "time", 
                     y: "dose",
-                    r: 10,
+                    r: 3,
                     fill: 'red',
+                }),
+                Plot.line(props.testsData, {
+                    x: "time", 
+                    y: "value",
+                    r: 10,
+                    stroke: 'yellow',
                 }),
             ]
         })
