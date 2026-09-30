@@ -11,15 +11,13 @@
   "dependencies": {
     "@lucide/vue": "^1.48.0",
     "@observablehq/plot": "^0.6.17",
+    "cubic-spline": "^3.0.3",
     "vue": "^3.5.42"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.8",
     "vite": "^8.3.0",
     "vite-plugin-vue-devtools": "^8.2.1"
-  },
-  "peerDependencies": {
-    "cubic-spline": "^3.0.3"
   },
   "engines": {
     "node": "^22.18.0 || >=24.12.0"
