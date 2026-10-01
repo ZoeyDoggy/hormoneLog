@@ -36,43 +36,36 @@
 
     function plot() {
 
-        if (props.injectionsData == undefined || props.testsData == undefined) {
+        if (props.injectionsData == undefined || props.testsData == undefined || props.injectionsData.length <= 1 || props.testsData.length <= 1) {
             return;
         }
 
-        // if (log.length === 0) {
-            
-        //     return;
-        // }
+        let doses = [];
+        let times = [];
+        let models = [];
 
-        // let doses = [];
-        // let times = [];
-        // let models = [];
+        let conversionFactor = 1;
 
-        // let conversionFactor = 1;
+        let modelLookup = [];
+        modelLookup['Valerate'] = 'EV im';
+        modelLookup['Enanthate'] = 'EEn im';
 
-        // let modelLookup = [];
-        // modelLookup['Valerate'] = 'EV im';
-        // modelLookup['Enanthate'] = 'EEn im';
+        let epoch = props.injectionsData[0].time;
+        let interval = ((Date.now() - epoch)) / 1000 / 86400;
 
-        // let epoch = log[0].unixTime;
-        // let interval = ((Date.now() - epoch)) / 1000 / 86400;
+        for (const injection of props.injectionsData) {
 
-        // for (let row in log) {
+            doses.push(injection.dose * parseInt(injection.concentration))
+            times.push((injection.time - epoch)/86400/1000);
+            models.push(modelLookup[injection.ester.trim()]);
+        }
 
-        //     const rowObject = log[row];
+        let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval + 7, 2500);
 
-        //     doses.push(rowObject.mlDose * parseInt(rowObject.concentration))
-        //     times.push((rowObject.unixTime - epoch)/86400/1000);
-        //     models.push(modelLookup[rowObject.ester]);
-        // }
+        for (let i = 0; i < customDoseCurve.length; i++) {
 
-        // let customdoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval + 7, 2500);
-
-        // for (let i = 0; i < customdoseCurve.length; i++) {
-
-        //     customdoseCurve[i].Time = epoch + Math.round(customdoseCurve[i].Time * 86400) * 1000;
-        // }
+            customDoseCurve[i].Time = epoch + Math.round(customDoseCurve[i].Time * 86400) * 1000;
+        }
 
         // let targetRange = fillTargetRange(0, interval, conversionFactor);
 
@@ -135,6 +128,12 @@
                     y: "value",
                     r: 10,
                     stroke: 'yellow',
+                }),
+                Plot.line(customDoseCurve, {
+                    x: 'Time',
+                    y: 'E2',
+                    r: 1,
+                    stroke: 'green',
                 }),
             ]
         })

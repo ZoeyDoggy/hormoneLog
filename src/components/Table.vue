@@ -177,6 +177,19 @@
                     <th  v-if="item != 'uuid'" :class="`${item}Column`">{{ item }}</th>
                 </template>
             </tr>
+
+            <tr>
+                <template v-for="(item, key) in result[0]">
+                    <td v-if="key != 'uuid'">
+                        <div>
+                            <input :type="inputType[key]" :placeholder="key" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
+                        </div>
+                    </td>
+                </template>
+                <td>
+                    <input type="button" value="submit" @click="postObject">
+                </td>
+            </tr>
         </thead>
 
         <tbody>
@@ -198,19 +211,6 @@
                     <td><button @click="focusRow = ''"><X /></button></td>
                 </template>
                     
-            </tr>
-    
-            <tr>
-                <template v-for="(item, key) in result[0]">
-                    <td v-if="key != 'uuid'">
-                        <div>
-                            <input :type="inputType[key]" :placeholder="key" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
-                        </div>
-                    </td>
-                </template>
-                <td>
-                    <input type="button" value="submit" @click="postObject">
-                </td>
             </tr>
 
         </tbody>
