@@ -55,9 +55,13 @@
 
         for (const injection of props.injectionsData) {
 
-            doses.push(injection.dose * parseInt(injection.concentration))
-            times.push((injection.time - epoch)/86400/1000);
-            models.push(modelLookup[injection.ester.trim()]);
+            if (injection.recipient == 'Violet') {
+
+                doses.push(injection.dose * parseInt(injection.concentration))
+                times.push((injection.time - epoch)/86400/1000);
+                models.push(modelLookup[injection.ester.trim()]);
+                
+            }
         }
 
         let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval + 7, 2500);
@@ -67,55 +71,19 @@
             customDoseCurve[i].Time = epoch + Math.round(customDoseCurve[i].Time * 86400) * 1000;
         }
 
-        // let targetRange = fillTargetRange(0, interval, conversionFactor);
+        let targetRange = fillTargetRange(0, interval, conversionFactor);
 
-        // for (let i = 0; i < targetRange.length; i++) {
-        //     targetRange[i].time = epoch + Math.round(targetRange[i].time * 86400) * 1000;
-        // }
-
-        // const plotCanvas = Plot.plot({
-        //     x: {type: "utc", grid: true},
-        //     width: 1500,
-        //     marks: [
-        //     Plot.ruleY([-20]),
-        //     Plot.dot(filterByEster(log, 'Enanthate'), {
-        //         x: "unixTime", 
-        //         y: "mlDose",
-        //         r: 2.5,
-        //         fill: flavors.mocha.colors.mauve.hex,
-        //     }),
-        //     Plot.dot(filterByEster(log, 'Valerate'), {
-        //         x: "unixTime", 
-        //         y: "mlDose",
-        //         r: 2.5,
-        //         fill: flavors.mocha.colors.blue.hex,
-        //     }),
-        //     Plot.line(customdoseCurve, {
-        //         x: 'Time',
-        //         y: 'E2',
-        //         r: 1,
-        //         stroke: flavors.mocha.colors.yellow.hex,
-        //     }),
-        //     Plot.areaY(targetRange, {
-        //         x: 'time', y1: 'lower', y2: 'upper',
-        //         fill: flavors.mocha.colors.yellow.hex,
-        //         fillOpacity: 0.15
-        //     }),
-        //     Plot.text(['WPATH target range'], {
-        //         x: epoch + Math.round(interval * 86400) * 1000, y: 150 * conversionFactor, rotate: 90,
-        //         fill: flavors.mocha.colors.yellow.hex,
-        //         frameAnchor: 'middle', textAnchor: 'middle', lineAnchor: 'bottom'
-        //     })
-        //     ]
-        // })
+        for (let i = 0; i < targetRange.length; i++) {
+            targetRange[i].time = epoch + Math.round(targetRange[i].time * 86400) * 1000;
+        }
 
         const plotCanvas = Plot.plot({
             x: {type: "utc", grid: true},
             width: graphDiv.value.offsetWidth,
             marks: [
                 // Plot.ruleY([-20]),
+                Plot.ruleX([1769053620000]),
                 Plot.frame(),
-                Plot.text(["Hello, world!"], {frameAnchor: "middle"}),
 
                 Plot.dot(props.injectionsData, {
                     x: "time", 
@@ -123,6 +91,7 @@
                     r: 3,
                     fill: 'red',
                 }),
+
                 Plot.line(props.testsData, {
                     x: "time", 
                     y: "value",
@@ -135,6 +104,17 @@
                     r: 1,
                     stroke: 'green',
                 }),
+                
+                Plot.areaY(targetRange, {
+                    x: 'time', y1: 'lower', y2: 'upper',
+                    fill: 'orange',
+                    fillOpacity: 0.15
+                }),
+                Plot.text(['WPATH target range'], {
+                    x: epoch + Math.round(interval * 86400) * 1000, y: 150 * conversionFactor, rotate: 90,
+                    fill: 'white',
+                    frameAnchor: 'middle', textAnchor: 'middle', lineAnchor: 'bottom'
+                })
             ]
         })
 
@@ -145,8 +125,24 @@
 
 <template>
     <div ref="graphDiv" id="graph"></div>
+    <div id="rangeSelector">
+        <p>start</p>
+        <input
+            id="dateStart"
+            type="date"
+        >
+        <p>end</p>
+        <input
+            id="dateEnd"
+            type="date"
+        >
+        <button>reset</button>
+    </div>
 </template>
 
-
 <style scoped>
+    #rangeSelector {
+        display: flex;
+        height: 20px;
+    }
 </style>
