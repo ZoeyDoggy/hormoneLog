@@ -225,9 +225,13 @@
         visibility: hidden;
         width: 0;
     }
+    tr {
+        height: 20px;
+    }
 
     table {
         width: 100%;
+        height: fit-content;
         margin: 5px;
         table-layout: fixed;
         border-color: red;
