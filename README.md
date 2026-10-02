@@ -14,3 +14,6 @@
 - [ ] dropdown for Ester 
 - [ ] dropdown for test type
 
+- [ ] add server handshake endpoint with version number
+    - [ ] add available recipients and other values there (schema)
+

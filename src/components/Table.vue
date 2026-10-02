@@ -5,7 +5,7 @@
 
     import { SquarePen, Save, Trash, X, Check } from '@lucide/vue';
 
-    const props = defineProps(['URL', 'path']);
+    const props = defineProps(['URL', 'path', 'recipient']);
 
     const result = ref([{}]);
 
@@ -194,25 +194,26 @@
 
         <tbody>
         
-            <tr v-for="row in result" :key="row.uuid">
-                <template v-for="(data, key) in row">
+            <template v-for="row in result" :key="row.uuid">
+                <tr v-if="row.recipient == props.recipient">
+                    <template v-for="(data, key) in row">
 
-                    <template v-if="key != 'uuid'">
-                        <td v-if="focusRow != row.uuid">{{ formatData(key, data) }}</td>
-                        <td v-else><input :type="inputType[key]" :placeholder="key" :value="formatInput(key, putParams.get(key))" @change="event => updatePutParams(key, event.target.value)"></td>
+                        <template v-if="key != 'uuid'">
+                            <td v-if="focusRow != row.uuid">{{ formatData(key, data) }}</td>
+                            <td v-else><input :type="inputType[key]" :placeholder="key" :value="formatInput(key, putParams.get(key))" @change="event => updatePutParams(key, event.target.value)"></td>
+                        </template>
+
                     </template>
-
-                </template>
-                
-                <td v-if="focusRow != row.uuid"><button id="rowEdit" @click="focusRow = row.uuid"><SquarePen /></button></td>
-                <template v-else>
-                    <td><button @click="putObject"><Save /></button></td>
-                    <td><button @click="deleteObject"><Trash /></button></td>
-                    <td><button @click="focusRow = ''"><X /></button></td>
-                </template>
                     
-            </tr>
-
+                    <td v-if="focusRow != row.uuid"><button id="rowEdit" @click="focusRow = row.uuid"><SquarePen /></button></td>
+                    <template v-else>
+                        <td><button @click="putObject"><Save /></button></td>
+                        <td><button @click="deleteObject"><Trash /></button></td>
+                        <td><button @click="focusRow = ''"><X /></button></td>
+                    </template>
+                        
+                </tr>
+            </template>
         </tbody>
     </table>
 </template>

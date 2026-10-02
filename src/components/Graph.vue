@@ -15,7 +15,7 @@
         terminalEliminationTime3C
     } from '../models.js';
 
-    const props = defineProps(['injectionsData', 'testsData']);
+    const props = defineProps(['injectionsData', 'testsData', 'recipient']);
 
     const graphDiv = useTemplateRef('graphDiv');
 
@@ -29,6 +29,10 @@
             plot();
         })
         watch(() => props.testsData, () => {
+            //console.log(props.testsData);
+            plot();
+        })
+        watch(() => props.recipient, () => {
             //console.log(props.testsData);
             plot();
         })
@@ -55,7 +59,7 @@
 
         for (const injection of props.injectionsData) {
 
-            if (injection.recipient == 'Violet') {
+            if (injection.recipient == props.recipient) {
 
                 doses.push(injection.dose * parseInt(injection.concentration))
                 times.push((injection.time - epoch)/86400/1000);
@@ -93,7 +97,7 @@
                     fill: 'yellow',
                 }),
 
-                Plot.dot(props.testsData.filter((object) => object.test == 'Estradiol'), {
+                Plot.dot(props.testsData.filter((object) => object.test == 'Estradiol' && object.recipient == props.recipient), {
                     x: "time", 
                     y: "value",
                     r: 3,
@@ -102,7 +106,7 @@
                     stroke: '#FF5C74',
                 }),
 
-                Plot.dot(props.testsData.filter((object) => object.test == 'Testosterone'), {
+                Plot.dot(props.testsData.filter((object) => object.test == 'Testosterone' && object.recipient == props.recipient), {
                     x: "time", 
                     y: "value",
                     r: 3,

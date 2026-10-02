@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, watch } from "vue";
+  import { ref, onMounted, watch } from "vue";
 
   import Table from "./components/Table.vue";
   import Graph from "./components/Graph.vue";
@@ -13,7 +13,23 @@
   const injections = ref();
   const tests = ref();
 
-  //Array.from( new Set( items ) )
+  const recipients = ref([]);
+  const focusedRecipient = ref(localStorage.getItem("recipient"))
+
+  watch(focusedRecipient, (newRecipient) => {
+    localStorage.setItem("recipient", newRecipient);
+  })
+
+  onMounted(() => {
+        watch(() => injections.value, () => {
+          recipients.value = Array.from( new Set( injections.value.map(a => a.recipient)));
+          console.log(Array.from( new Set( injections.value.map(a => a.ester) ) ))
+        })
+        watch(() => tests.value, () => {
+          console.log(Array.from( new Set( tests.value.map(a => a.test) ) ))
+          console.log(Array.from( new Set( tests.value.map(a => a.unit) ) ))
+        })
+    })
 </script>
 
 <template>
@@ -28,13 +44,21 @@
     required 
     :value="URL"
     @change="event => URL = event.target.value"/>
+
+    <div>Selected: {{ focusedRecipient }}</div>
+
+    <select v-model="focusedRecipient">
+      <option v-for="name in recipients" :value="name">
+        {{ name }}
+      </option>
+    </select>
     
-    <Graph :injectionsData="injections" :testsData="tests"></Graph>
+    <Graph :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Graph>
 
   <div style="display: flex;">
-    <Table :URL="URL" :path="'injections'" id="injectionsTable" @update="callback => injections = callback"></Table>
+    <Table :recipient="focusedRecipient" :URL="URL" :path="'injections'" id="injectionsTable" @update="callback => injections = callback"></Table>
   
-    <Table :URL="URL" :path="'tests'" id="testsTable" @update="callback => tests = callback"></Table>
+    <Table :recipient="focusedRecipient" :URL="URL" :path="'tests'" id="testsTable" @update="callback => tests = callback"></Table>
   </div>
 </template>
 
