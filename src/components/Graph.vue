@@ -2,6 +2,7 @@
 
     import { useTemplateRef, onMounted, watch } from 'vue'
     import * as Plot from "@observablehq/plot";
+    import { flavors } from "@catppuccin/palette";
     import {
         e2multidose3C,
         e2ssAverage3C,
@@ -101,25 +102,25 @@
                     x: "time", 
                     y: "value",
                     r: 3,
-                    fill: '#FF5C74',
+                    fill: flavors.macchiato.colors.red.hex,
                     fillOpacity: 0.35,
-                    stroke: '#FF5C74',
+                    stroke: flavors.macchiato.colors.red.hex,
                 }),
 
                 Plot.dot(props.testsData.filter((object) => object.test == 'Testosterone' && object.recipient == props.recipient), {
                     x: "time", 
                     y: "value",
                     r: 3,
-                    fill: '#4D75FF',
+                    fill: flavors.macchiato.colors.blue.hex,
                     fillOpacity: 0.35,
-                    stroke: '#4D75FF',
+                    stroke: flavors.macchiato.colors.blue.hex,
                 }),
 
                 Plot.line(customDoseCurve, {
                     x: 'Time',
                     y: 'E2',
                     r: 1,
-                    stroke: '#FFE6E9',
+                    stroke: flavors.macchiato.colors.text.hex,
                 }),
                 
                 Plot.areaY(targetRange, {
@@ -158,6 +159,11 @@
 </template>
 
 <style scoped>
+
+    #graph {
+        background-color: var(--ctp-macchiato-crust);
+    }
+
     #rangeSelector {
         display: flex;
         height: 20px;

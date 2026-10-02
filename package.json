@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@catppuccin/palette": "^1.8.0",
     "@lucide/vue": "^1.48.0",
     "@observablehq/plot": "^0.6.17",
     "csv": "^6.6.4",

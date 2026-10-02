@@ -238,6 +238,8 @@
         margin: 5px;
         table-layout: auto;
         border-collapse: collapse;
+
+        background-color: var(--ctp-macchiato-crust);
     }
     td {
         height: inherit;

@@ -3,5 +3,5 @@ body {
     font-size: 11pt;
     color: aliceblue;
 
-    background-color: rgb(39, 36, 38);
+    background-color: var(--ctp-macchiato-base);;
 }

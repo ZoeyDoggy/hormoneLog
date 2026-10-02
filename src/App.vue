@@ -66,7 +66,6 @@
 
 #injectionsTable {
   width: 60%;
-  background-color: var(--ctp-mocha-base);
 }
 #testsTable {
   width: 40%;
