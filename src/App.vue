@@ -12,6 +12,8 @@
 
   const injections = ref();
   const tests = ref();
+
+  //Array.from( new Set( items ) )
 </script>
 
 <template>

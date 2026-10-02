@@ -77,6 +77,7 @@
             targetRange[i].time = epoch + Math.round(targetRange[i].time * 86400) * 1000;
         }
 
+
         const plotCanvas = Plot.plot({
             x: {type: "utc", grid: true},
             width: graphDiv.value.offsetWidth,
@@ -88,21 +89,33 @@
                 Plot.dot(props.injectionsData, {
                     x: "time", 
                     y: "dose",
-                    r: 3,
-                    fill: 'red',
+                    r: 1,
+                    fill: 'yellow',
                 }),
 
-                Plot.line(props.testsData, {
+                Plot.dot(props.testsData.filter((object) => object.test == 'Estradiol'), {
                     x: "time", 
                     y: "value",
-                    r: 10,
-                    stroke: 'yellow',
+                    r: 3,
+                    fill: '#FF5C74',
+                    fillOpacity: 0.35,
+                    stroke: '#FF5C74',
                 }),
+
+                Plot.dot(props.testsData.filter((object) => object.test == 'Testosterone'), {
+                    x: "time", 
+                    y: "value",
+                    r: 3,
+                    fill: '#4D75FF',
+                    fillOpacity: 0.35,
+                    stroke: '#4D75FF',
+                }),
+
                 Plot.line(customDoseCurve, {
                     x: 'Time',
                     y: 'E2',
                     r: 1,
-                    stroke: 'green',
+                    stroke: '#FFE6E9',
                 }),
                 
                 Plot.areaY(targetRange, {

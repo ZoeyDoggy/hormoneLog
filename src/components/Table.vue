@@ -227,18 +227,21 @@
     }
     tr {
         height: 20px;
+        border-style: none;
     }
+    tr:nth-child(even) {background-color: #3d3d3d;}
 
     table {
         width: 100%;
         height: fit-content;
         margin: 5px;
-        table-layout: fixed;
-        border-color: red;
-        border-style: solid;
+        table-layout: auto;
+        border-collapse: collapse;
     }
     td {
+        height: inherit;
         position: relative;
+        padding: 2px;
     }
     td div {
         position: absolute;
@@ -247,12 +250,26 @@
         right: 0;
         bottom: 0;
         left: 0;
+        margin: 0px;
     }
     input {
         width: 100%;
         box-sizing: border-box;
+        
+    }
+    button {
+        height: inherit;
+        aspect-ratio: 1;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .timeColumn {
         width: 160px;
+    }
+    svg {
+        height: 14px;
+        width: 14px;
     }
 </style>
