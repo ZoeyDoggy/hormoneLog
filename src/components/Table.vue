@@ -230,7 +230,9 @@
         height: 20px;
         border-style: none;
     }
-    tr:nth-child(even) {background-color: #3d3d3d;}
+    tr:nth-child(even) {
+        background-color: var(--ctp-macchiato-mantle);
+    }
 
     table {
         width: 100%;

@@ -1,6 +1,6 @@
 <script setup>
 
-    import { useTemplateRef, onMounted, watch } from 'vue'
+    import { useTemplateRef, onMounted, watch, ref } from 'vue'
     import * as Plot from "@observablehq/plot";
     import { flavors } from "@catppuccin/palette";
     import {
@@ -20,6 +20,8 @@
 
     const graphDiv = useTemplateRef('graphDiv');
 
+    const timeStart = ref(0);
+    const timeEnd = ref(Date.now());
     
 
     onMounted(() => {
@@ -58,7 +60,7 @@
         let epoch = props.injectionsData[0].time;
         let interval = ((Date.now() - epoch)) / 1000 / 86400;
 
-        for (const injection of props.injectionsData) {
+        for (const injection of props.injectionsData.filter((data) => data.time >= timeStart.value && data.time <= timeEnd.value)) {
 
             if (injection.recipient == props.recipient) {
 
@@ -86,9 +88,9 @@
         const plotCanvas = Plot.plot({
             x: {type: "utc", grid: true},
             width: graphDiv.value.offsetWidth,
+
             marks: [
                 // Plot.ruleY([-20]),
-                Plot.ruleX([1769053620000]),
                 Plot.frame(),
 
                 Plot.dot(props.injectionsData, {
@@ -98,7 +100,11 @@
                     fill: 'yellow',
                 }),
 
-                Plot.dot(props.testsData.filter((object) => object.test == 'Estradiol' && object.recipient == props.recipient), {
+                Plot.dot(props.testsData.filter((object) => 
+                        object.test == 'Estradiol' && 
+                        object.recipient == props.recipient && 
+                        object.time >= timeStart.value && 
+                        object.time <= timeEnd.value), {
                     x: "time", 
                     y: "value",
                     r: 3,
@@ -107,7 +113,11 @@
                     stroke: flavors.macchiato.colors.red.hex,
                 }),
 
-                Plot.dot(props.testsData.filter((object) => object.test == 'Testosterone' && object.recipient == props.recipient), {
+                Plot.dot(props.testsData.filter((object) => 
+                        object.test == 'Testosterone' && 
+                        object.recipient == props.recipient && 
+                        object.time >= timeStart.value && 
+                        object.time <= timeEnd.value), {
                     x: "time", 
                     y: "value",
                     r: 3,
@@ -121,6 +131,9 @@
                     y: 'E2',
                     r: 1,
                     stroke: flavors.macchiato.colors.text.hex,
+                    channels: {name: "Time"},
+                    className: "customLine",
+                    tip: true
                 }),
                 
                 Plot.areaY(targetRange, {

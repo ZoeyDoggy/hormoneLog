@@ -1,7 +1,7 @@
 body {
     font-family: helvetica;
     font-size: 11pt;
-    color: aliceblue;
+    color: var(--ctp-macchiato-text);
 
-    background-color: var(--ctp-macchiato-base);;
+    background-color: var(--ctp-macchiato-base);
 }
