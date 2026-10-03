@@ -19,6 +19,7 @@
     const props = defineProps(['injectionsData', 'testsData', 'recipient']);
 
     const graphDiv = useTemplateRef('graphDiv');
+    const smallGraph = useTemplateRef('smallGraph');
 
     const timeStart = ref(0);
     const timeEnd = ref(Date.now());
@@ -92,6 +93,8 @@
             marks: [
                 // Plot.ruleY([-20]),
                 Plot.frame(),
+                Plot.axisY({anchor: "left", tickSpacing: 50}),
+                Plot.axisY({anchor: "right", tickSpacing: 50}),
 
                 Plot.dot(props.injectionsData, {
                     x: "time", 
@@ -151,29 +154,59 @@
 
         graphDiv.value.innerHTML = '';
         graphDiv.value.append(plotCanvas);
+
+        const timeValues = props.injectionsData.map(a => a.time).concat(props.testsData.map(a => a.time));
+        const earliestTime = Math.min(...timeValues);
+        const latestTime = Math.max(...timeValues);
+
+        const smallCanvas = Plot.plot({
+            x: {type: "utc", grid: true},
+            width: smallGraph.value.offsetWidth,
+            height: '100',
+
+            marks: [
+                Plot.ruleX([earliestTime], {stroke: 'none'}),
+                Plot.ruleX([latestTime], {stroke: 'none'}),
+                Plot.axisY({label: "", labelArrow: "none", anchor: "left", ticks: 0}),
+                Plot.axisY({label: "", labelArrow: "none", anchor: "right", ticks: 0}),
+
+                Plot.line(customDoseCurve, {
+                    x: 'Time',
+                    y: 'E2',
+                    r: 1,
+                    stroke: flavors.macchiato.colors.text.hex,
+                }),
+            ]
+        })
+
+        smallGraph.value.innerHTML = '';
+        smallGraph.value.append(smallCanvas);
     }
 </script>
 
 <template>
-    <div ref="graphDiv" id="graph"></div>
-    <div id="rangeSelector">
-        <p>start</p>
-        <input
-            id="dateStart"
-            type="date"
-        >
-        <p>end</p>
-        <input
-            id="dateEnd"
-            type="date"
-        >
-        <button>reset</button>
+    <div id="graphWindow">
+        <div ref="graphDiv" id="graph"></div>
+        <div ref="smallGraph" id="smallGraph"></div>
+        <div id="rangeSelector">
+            <p>start</p>
+            <input
+                id="dateStart"
+                type="date"
+            >
+            <p>end</p>
+            <input
+                id="dateEnd"
+                type="date"
+            >
+            <button>reset</button>
+        </div>
     </div>
 </template>
 
 <style scoped>
 
-    #graph {
+    #graphWindow {
         background-color: var(--ctp-macchiato-crust);
     }
 
