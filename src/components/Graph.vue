@@ -21,12 +21,25 @@
     const graphDiv = useTemplateRef('graphDiv');
     const smallGraph = useTemplateRef('smallGraph');
 
+    const selector = useTemplateRef('selector');
+
     const timeStart = ref(0);
     const timeEnd = ref(Date.now());
-    
+
+    const viewStart = ref();
+    const viewEnd = ref();
+
+    function timeRange(event) {
+
+        if (event.target.id == 'viewStart') {
+            viewStart.value = event.target.value;
+        } else {
+            viewEnd.value = event.target.value;
+        }
+        plot();
+    }
 
     onMounted(() => {
-        
 
         watch(() => props.injectionsData, () => {
             //console.log(props.injectionsData);
@@ -48,6 +61,16 @@
             return;
         }
 
+        const timeValues = props.injectionsData.map(a => a.time).concat(props.testsData.map(a => a.time));
+        timeStart.value = Math.min(...timeValues);
+        timeEnd.value = Math.max(...timeValues);
+
+        if (viewStart.value == undefined || viewEnd.value == undefined) {
+
+            viewStart.value = timeStart.value;
+            viewEnd.value = timeEnd.value;
+        }
+
         let doses = [];
         let times = [];
         let models = [];
@@ -61,7 +84,7 @@
         let epoch = props.injectionsData[0].time;
         let interval = ((Date.now() - epoch)) / 1000 / 86400;
 
-        for (const injection of props.injectionsData.filter((data) => data.time >= timeStart.value && data.time <= timeEnd.value)) {
+        for (const injection of props.injectionsData.filter((data) => data.time >= viewStart.value && data.time <= viewEnd.value)) {
 
             if (injection.recipient == props.recipient) {
 
@@ -106,8 +129,8 @@
                 Plot.dot(props.testsData.filter((object) => 
                         object.test == 'Estradiol' && 
                         object.recipient == props.recipient && 
-                        object.time >= timeStart.value && 
-                        object.time <= timeEnd.value), {
+                        object.time >= viewStart.value && 
+                        object.time <= viewEnd.value), {
                     x: "time", 
                     y: "value",
                     r: 3,
@@ -119,8 +142,8 @@
                 Plot.dot(props.testsData.filter((object) => 
                         object.test == 'Testosterone' && 
                         object.recipient == props.recipient && 
-                        object.time >= timeStart.value && 
-                        object.time <= timeEnd.value), {
+                        object.time >= viewStart.value && 
+                        object.time <= viewEnd.value), {
                     x: "time", 
                     y: "value",
                     r: 3,
@@ -155,18 +178,14 @@
         graphDiv.value.innerHTML = '';
         graphDiv.value.append(plotCanvas);
 
-        const timeValues = props.injectionsData.map(a => a.time).concat(props.testsData.map(a => a.time));
-        const earliestTime = Math.min(...timeValues);
-        const latestTime = Math.max(...timeValues);
-
         const smallCanvas = Plot.plot({
             x: {type: "utc", grid: true},
             width: smallGraph.value.offsetWidth,
             height: '100',
 
             marks: [
-                Plot.ruleX([earliestTime], {stroke: 'none'}),
-                Plot.ruleX([latestTime], {stroke: 'none'}),
+                Plot.ruleX([timeStart.value], {stroke: 'none'}),
+                Plot.ruleX([timeEnd.value], {stroke: 'none'}),
                 Plot.axisY({label: "", labelArrow: "none", anchor: "left", ticks: 0}),
                 Plot.axisY({label: "", labelArrow: "none", anchor: "right", ticks: 0}),
 
@@ -179,28 +198,28 @@
             ]
         })
 
+        // console.log(smallCanvas);
+        // console.log(selector.value);
+        smallCanvas.append(selector.value);
+        // console.log(smallCanvas)
         smallGraph.value.innerHTML = '';
         smallGraph.value.append(smallCanvas);
     }
 </script>
 
 <template>
+
     <div id="graphWindow">
         <div ref="graphDiv" id="graph"></div>
         <div ref="smallGraph" id="smallGraph"></div>
-        <div id="rangeSelector">
-            <p>start</p>
-            <input
-                id="dateStart"
-                type="date"
-            >
-            <p>end</p>
-            <input
-                id="dateEnd"
-                type="date"
-            >
-            <button>reset</button>
-        </div>
+
+        <div>{{ viewStart }}</div>
+        <input class="rangeSlider" type="range" id="viewStart" name="viewStart" :min="timeStart" :max="timeEnd" :value="viewStart" @input="event => timeRange(event)"/>
+        <label for="viewStart">viewStart</label>
+
+        <div>{{ viewEnd }}</div>
+        <input class="rangeSlider" type="range" id="viewEnd" name="viewEnd" :min="timeStart" :max="timeEnd" :value="viewEnd" @input="event => timeRange(event)"/>
+        <label for="viewEnd">viewEnd</label>
     </div>
 </template>
 
@@ -210,8 +229,7 @@
         background-color: var(--ctp-macchiato-crust);
     }
 
-    #rangeSelector {
-        display: flex;
-        height: 20px;
+    .rangeSlider {
+        width: 100%;
     }
 </style>
