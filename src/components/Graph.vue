@@ -84,7 +84,7 @@
         let epoch = props.injectionsData[0].time;
         let interval = ((Date.now() - epoch)) / 1000 / 86400;
 
-        for (const injection of props.injectionsData.filter((data) => data.time >= viewStart.value && data.time <= viewEnd.value)) {
+        for (const injection of props.injectionsData) {
 
             if (injection.recipient == props.recipient) {
 
@@ -108,7 +108,6 @@
             targetRange[i].time = epoch + Math.round(targetRange[i].time * 86400) * 1000;
         }
 
-
         const plotCanvas = Plot.plot({
             x: {type: "utc", grid: true},
             width: graphDiv.value.offsetWidth,
@@ -119,12 +118,15 @@
                 Plot.axisY({anchor: "left", tickSpacing: 50}),
                 Plot.axisY({anchor: "right", tickSpacing: 50}),
 
-                Plot.dot(props.injectionsData, {
-                    x: "time", 
-                    y: "dose",
-                    r: 1,
-                    fill: 'yellow',
-                }),
+                Plot.ruleX([Number(viewStart.value), Number(viewEnd.value)], {stroke: 'none'}),
+                Plot.ruleY([-50, 800], {stroke: 'none'}),
+
+                // Plot.dot(props.injectionsData, {
+                //     x: "time", 
+                //     y: "dose",
+                //     r: 1,
+                //     fill: 'yellow',
+                // }),
 
                 Plot.dot(props.testsData.filter((object) => 
                         object.test == 'Estradiol' && 
@@ -152,7 +154,9 @@
                     stroke: flavors.macchiato.colors.blue.hex,
                 }),
 
-                Plot.line(customDoseCurve, {
+                Plot.line(customDoseCurve.filter((data) => 
+                        data.Time >= viewStart.value && 
+                        data.Time <= viewEnd.value), {
                     x: 'Time',
                     y: 'E2',
                     r: 1,
@@ -162,13 +166,13 @@
                     tip: true
                 }),
                 
-                Plot.areaY(targetRange, {
-                    x: 'time', y1: 'lower', y2: 'upper',
-                    fill: 'orange',
-                    fillOpacity: 0.15
-                }),
+                // Plot.areaY(targetRange, {
+                //     x: 'time', y1: 'lower', y2: 'upper',
+                //     fill: 'orange',
+                //     fillOpacity: 0.15
+                // }),
                 Plot.text(['WPATH target range'], {
-                    x: epoch + Math.round(interval * 86400) * 1000, y: 150 * conversionFactor, rotate: 90,
+                    x: Number(viewEnd.value), y: 150 * conversionFactor, rotate: 90,
                     fill: 'white',
                     frameAnchor: 'middle', textAnchor: 'middle', lineAnchor: 'bottom'
                 })
