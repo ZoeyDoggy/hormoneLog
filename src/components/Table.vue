@@ -42,6 +42,8 @@
         .catch((error) => {
             console.error(`onRejected function called: ${error.message}`);
         })
+
+        console.log(result.value[0]);
     }
 
     function updatePostParams(key, value) {
@@ -166,6 +168,7 @@
     watch(result, (newResult) => {
 
         emit('update', newResult);
+        console.log(result.value);
     })
 </script>
 
@@ -182,13 +185,20 @@
                 <template v-for="(item, key) in result[0]">
                     <td v-if="key != 'uuid'">
                         <div>
-                            <input :type="inputType[key]" :placeholder="key" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
+                            
+
+
+                            <select v-if="['ester', 'site', 'recipient', 'vial', 'test', 'unit'].includes(key)" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
+                                <option v-for="name in Array.from( new Set( result.map(a => a[key])))" :value="name">
+                                    {{ name }}
+                                </option>
+                            </select>
+
+                            <input v-else :type="inputType[key]" :placeholder="key" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
                         </div>
                     </td>
                 </template>
-                <td>
-                    <input type="button" value="submit" @click="postObject">
-                </td>
+                <td><button value="submit" @click="postObject"><Save /></button></td>
             </tr>
         </thead>
 
@@ -227,7 +237,7 @@
         width: 0;
     }
     tr {
-        height: 20px;
+        height: 25px;
         border-style: none;
     }
     tr:nth-child(even) {

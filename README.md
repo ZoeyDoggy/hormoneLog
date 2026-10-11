@@ -11,8 +11,8 @@
 
 - [ ] loading icon for DB actions
 
-- [ ] dropdown for Ester 
-- [ ] dropdown for test type
+- [x] dropdown for Ester 
+- [x] dropdown for test type
 
 - [ ] target range
 
