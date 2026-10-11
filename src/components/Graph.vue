@@ -15,6 +15,7 @@
         PKRandomFunctions,
         terminalEliminationTime3C
     } from '../models.js';
+    import { RotateCcw } from '@lucide/vue';
 
     const props = defineProps(['injectionsData', 'testsData', 'recipient']);
 
@@ -26,16 +27,29 @@
     const timeStart = ref(0);
     const timeEnd = ref(Date.now());
 
-    const viewStart = ref();
-    const viewEnd = ref();
+    const viewStart = ref(Number(localStorage.getItem("viewStart")));
+    const viewEnd = ref(Number(localStorage.getItem("viewEnd")));
 
     function timeRange(event) {
 
         if (event.target.id == 'viewStart') {
+
             viewStart.value = event.target.value;
+            localStorage.setItem("viewStart", viewStart.value);
         } else {
+
             viewEnd.value = event.target.value;
+            localStorage.setItem("viewEnd", viewEnd.value);
         }
+        plot();
+    }
+
+    function resetView() {
+        viewStart.value = timeStart.value;
+        localStorage.setItem("viewStart", viewStart.value);
+        viewEnd.value = timeEnd.value;
+        localStorage.setItem("viewEnd", viewEnd.value);
+
         plot();
     }
 
@@ -217,13 +231,9 @@
         <div ref="graphDiv" id="graph"></div>
         <div ref="smallGraph" id="smallGraph"></div>
 
-        <div>{{ viewStart }}</div>
         <input class="rangeSlider" type="range" id="viewStart" name="viewStart" :min="timeStart" :max="timeEnd" :value="viewStart" @input="event => timeRange(event)"/>
-        <label for="viewStart">viewStart</label>
-
-        <div>{{ viewEnd }}</div>
         <input class="rangeSlider" type="range" id="viewEnd" name="viewEnd" :min="timeStart" :max="timeEnd" :value="viewEnd" @input="event => timeRange(event)"/>
-        <label for="viewEnd">viewEnd</label>
+        <button @click="resetView"><RotateCcw /></button>
     </div>
 </template>
 
