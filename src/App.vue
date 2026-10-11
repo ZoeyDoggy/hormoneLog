@@ -23,11 +23,11 @@
   onMounted(() => {
         watch(() => injections.value, () => {
           recipients.value = Array.from( new Set( injections.value.map(a => a.recipient)));
-          console.log(Array.from( new Set( injections.value.map(a => a.ester) ) ))
+          // console.log(Array.from( new Set( injections.value.map(a => a.ester) ) ))
         })
         watch(() => tests.value, () => {
-          console.log(Array.from( new Set( tests.value.map(a => a.test) ) ))
-          console.log(Array.from( new Set( tests.value.map(a => a.unit) ) ))
+          // console.log(Array.from( new Set( tests.value.map(a => a.test) ) ))
+          // console.log(Array.from( new Set( tests.value.map(a => a.unit) ) ))
         })
     })
 </script>

@@ -42,8 +42,6 @@
         .catch((error) => {
             console.error(`onRejected function called: ${error.message}`);
         })
-
-        console.log(result.value[0]);
     }
 
     function updatePostParams(key, value) {
@@ -168,7 +166,6 @@
     watch(result, (newResult) => {
 
         emit('update', newResult);
-        console.log(result.value);
     })
 </script>
 
