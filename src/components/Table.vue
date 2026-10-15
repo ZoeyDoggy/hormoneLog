@@ -176,15 +176,13 @@
                 <template v-for="item in Object.keys(result[0])">
                     <th  v-if="item != 'uuid'" :class="`${item}Column`">{{ item }}</th>
                 </template>
+                <th :class="`buttonColumn`"></th>
             </tr>
 
             <tr>
                 <template v-for="(item, key) in result[0]">
                     <td v-if="key != 'uuid'">
-                        <div>
-                            
-
-
+                        <div class="inputDiv"> 
                             <select v-if="['ester', 'site', 'recipient', 'vial', 'test', 'unit'].includes(key)" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
                                 <option v-for="name in Array.from( new Set( result.map(a => a[key])))" :value="name">
                                     {{ name }}
@@ -253,7 +251,10 @@
     td {
         height: inherit;
         position: relative;
-        padding: 2px;
+        
+    }
+    td, th {
+        padding: 2px 5px 2px 5px;
     }
     td div {
         position: absolute;
@@ -263,25 +264,55 @@
         bottom: 0;
         left: 0;
         margin: 0px;
-    }
-    input {
-        width: 100%;
-        box-sizing: border-box;
+
         
+    }
+    input, select {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+
+        padding: 2px 5px 2px 5px;
+
+        border: none;
+        border-radius: 5px;
+
+        color: var(--ctp-macchiato-text);
+        background-color: var(--ctp-macchiato-surface0);
+    }
+    input::-webkit-input-placeholder, select::-webkit-input-placeholder {
+        color: var(--ctp-macchiato-subtext0);
+    }
+
+    .inputDiv {
+        padding: 2px;
     }
     button {
         height: inherit;
         aspect-ratio: 1;
-        padding: 0;
+        padding: 0px;
         display: flex;
         align-items: center;
         justify-content: center;
+        margin: 0px;
+
+        border: none;
+        border-radius: 5px;
+
+        color: var(--ctp-macchiato-crust);
+        background-color: var(--ctp-macchiato-lavender);
     }
     .timeColumn {
         width: 160px;
     }
+    .buttonColumn {
+        width: 1px;
+    }
     svg {
         height: 14px;
         width: 14px;
+    }
+    th {
+        text-transform: capitalize;
     }
 </style>
