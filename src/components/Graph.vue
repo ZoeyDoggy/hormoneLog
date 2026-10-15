@@ -22,8 +22,6 @@
     const graphDiv = useTemplateRef('graphDiv');
     const smallGraph = useTemplateRef('smallGraph');
 
-    const selector = useTemplateRef('selector');
-
     const timeStart = ref(0);
     const timeEnd = ref(Date.now());
 
@@ -202,6 +200,7 @@
             height: '100',
 
             marks: [
+                Plot.frame({stroke: 'none', className: 'smallGraphFrame'}),
                 Plot.ruleX([timeStart.value], {stroke: 'none'}),
                 Plot.ruleX([timeEnd.value], {stroke: 'none'}),
                 Plot.axisY({label: "", labelArrow: "none", anchor: "left", ticks: 0}),
@@ -216,13 +215,48 @@
             ]
         })
 
-        // console.log(smallCanvas);
-        // console.log(selector.value);
-        smallCanvas.append(selector.value);
-        // console.log(smallCanvas)
+        const frameObject = smallCanvas.getElementsByClassName("smallGraphFrame")[0];
+        const frameLeft = Number(frameObject.getAttribute('x'));
+        const frameTop = Number(frameObject.getAttribute('y'));
+
+        const frameWidth = Number(frameObject.getAttribute('width'));
+        const frameHeight = Number(frameObject.getAttribute('height'));
+
+        smallCanvas.appendChild(createRegion(
+            frameLeft, 
+            frameTop, 
+            convertRange( viewStart.value, [ timeStart.value, timeEnd.value ], [ frameLeft, frameLeft + frameWidth ] ) - frameLeft, 
+            frameHeight
+        ));
+
+        smallCanvas.appendChild(createRegion(
+            convertRange( viewEnd.value, [ timeStart.value, timeEnd.value ], [ frameLeft, frameLeft + frameWidth ] ), 
+            frameTop, 
+            frameWidth - convertRange( viewEnd.value, [ timeStart.value, timeEnd.value ], [ frameLeft, frameLeft + frameWidth ] ) + frameLeft, 
+            frameHeight
+        ));
+
         smallGraph.value.innerHTML = '';
-        smallGraph.value.append(smallCanvas);
+        smallGraph.value.appendChild(smallCanvas);
     }
+
+    function createRegion(x, y, w, h) {
+        let region = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        region.setAttribute('fill',flavors.macchiato.colors.overlay1.hex);
+        region.setAttribute('opacity',0.3);
+        region.setAttribute('rx', 5);
+
+        region.setAttribute('x',x);
+        region.setAttribute('y',y);
+        region.setAttribute('height',h);
+        region.setAttribute('width', w);
+
+        return region;
+    }
+
+    function convertRange( value, r1, r2 ) { 
+    return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
+}
 </script>
 
 <template>
@@ -230,10 +264,12 @@
     <div id="graphWindow">
         <div ref="graphDiv" id="graph"></div>
         <div ref="smallGraph" id="smallGraph"></div>
-
         <input class="rangeSlider" type="range" id="viewStart" name="viewStart" :min="timeStart" :max="timeEnd" :value="viewStart" @input="event => timeRange(event)"/>
         <input class="rangeSlider" type="range" id="viewEnd" name="viewEnd" :min="timeStart" :max="timeEnd" :value="viewEnd" @input="event => timeRange(event)"/>
         <button @click="resetView"><RotateCcw /></button>
+
+
+        
     </div>
 </template>
 
