@@ -28,6 +28,11 @@
     const viewStart = ref(Number(localStorage.getItem("viewStart")));
     const viewEnd = ref(Number(localStorage.getItem("viewEnd")));
 
+    const frameLeft = ref();
+    const frameTop = ref();
+    const frameWidth = ref();
+    const frameHeight = ref();
+
     function timeRange(event) {
 
         if (event.target.id == 'viewStart') {
@@ -216,24 +221,24 @@
         })
 
         const frameObject = smallCanvas.getElementsByClassName("smallGraphFrame")[0];
-        const frameLeft = Number(frameObject.getAttribute('x'));
-        const frameTop = Number(frameObject.getAttribute('y'));
+        frameLeft.value = Number(frameObject.getAttribute('x'));
+        frameTop.value = Number(frameObject.getAttribute('y'));
 
-        const frameWidth = Number(frameObject.getAttribute('width'));
-        const frameHeight = Number(frameObject.getAttribute('height'));
+        frameWidth.value = Number(frameObject.getAttribute('width'));
+        frameHeight.value = Number(frameObject.getAttribute('height'));
 
         smallCanvas.appendChild(createRegion(
-            frameLeft, 
-            frameTop, 
-            convertRange( viewStart.value, [ timeStart.value, timeEnd.value ], [ frameLeft, frameLeft + frameWidth ] ) - frameLeft, 
-            frameHeight
+            frameLeft.value, 
+            frameTop.value, 
+            convertRange( viewStart.value, [ timeStart.value, timeEnd.value ], [ frameLeft.value, frameLeft.value + frameWidth.value ] ) - frameLeft.value, 
+            frameHeight.value
         ));
 
         smallCanvas.appendChild(createRegion(
-            convertRange( viewEnd.value, [ timeStart.value, timeEnd.value ], [ frameLeft, frameLeft + frameWidth ] ), 
-            frameTop, 
-            frameWidth - convertRange( viewEnd.value, [ timeStart.value, timeEnd.value ], [ frameLeft, frameLeft + frameWidth ] ) + frameLeft, 
-            frameHeight
+            convertRange( viewEnd.value, [ timeStart.value, timeEnd.value ], [ frameLeft.value, frameLeft.value + frameWidth.value ] ), 
+            frameTop.value, 
+            frameWidth.value - convertRange( viewEnd.value, [ timeStart.value, timeEnd.value ], [ frameLeft.value, frameLeft.value + frameWidth .value] ) + frameLeft.value, 
+            frameHeight.value
         ));
 
         smallGraph.value.innerHTML = '';
@@ -242,44 +247,124 @@
 
     function createRegion(x, y, w, h) {
         let region = document.createElementNS('http://www.w3.org/2000/svg','rect');
-        region.setAttribute('fill',flavors.macchiato.colors.overlay1.hex);
-        region.setAttribute('opacity',0.3);
-        region.setAttribute('rx', 5);
 
         region.setAttribute('x',x);
         region.setAttribute('y',y);
         region.setAttribute('height',h);
         region.setAttribute('width', w);
 
+        region.setAttribute('class', 'rangeFill');
+
         return region;
     }
 
     function convertRange( value, r1, r2 ) { 
-    return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
-}
+        return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
+    }
 </script>
 
 <template>
 
     <div id="graphWindow">
         <div ref="graphDiv" id="graph"></div>
-        <div ref="smallGraph" id="smallGraph"></div>
-        <input class="rangeSlider" type="range" id="viewStart" name="viewStart" :min="timeStart" :max="timeEnd" :value="viewStart" @input="event => timeRange(event)"/>
-        <input class="rangeSlider" type="range" id="viewEnd" name="viewEnd" :min="timeStart" :max="timeEnd" :value="viewEnd" @input="event => timeRange(event)"/>
-        <button @click="resetView"><RotateCcw /></button>
+        <div id="rangeSelector">
+            <div ref="smallGraph" id="smallGraph"></div>
+            <div id="rangeContainer">
+                <input class="rangeSlider" type="range" id="viewStart" name="viewStart" :min="timeStart" :max="timeEnd" :value="viewStart" @input="event => timeRange(event)"/>
+                <input class="rangeSlider" type="range" id="viewEnd" name="viewEnd" :min="timeStart" :max="timeEnd" :value="viewEnd" @input="event => timeRange(event)"/>
+            </div>
+        </div>
+        
+        <!-- <button @click="resetView"><RotateCcw /></button> -->
 
 
         
     </div>
 </template>
 
-<style scoped>
+<style>
+
+    #rangeSelector {
+        position: relative;
+        height: 110px;
+    }
+
+    #smallGraph {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+    }
 
     #graphWindow {
         background-color: var(--ctp-macchiato-crust);
     }
 
+    #rangeContainer {
+        position: absolute;
+        left: v-bind(frameLeft-5 + 'px');
+        top: v-bind(frameTop + 'px');
+        width: v-bind(frameWidth+10 + 'px');
+        height: v-bind(frameHeight + 'px');
+    }
+    
+    .rangeFill {
+        fill: var(--ctp-macchiato-base);
+        stroke: var(--ctp-macchiato-base);
+        rx: 5px;
+        opacity: 0.7;
+    }
+
     .rangeSlider {
+        position: absolute;
+        pointer-events: none;
         width: 100%;
+        margin: 0px;
+    }
+
+    input[type=range] {
+        -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+        width: 100%; /* Specific width is required for Firefox. */
+        background: transparent; /* Otherwise white in Chrome */
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+    }
+
+    input[type=range]:focus {
+        outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+    }
+
+    input[type=range]::-ms-track {
+        width: 100%;
+        cursor: pointer;
+
+        /* Hides the slider so custom styles can be added */
+        background: transparent; 
+        border-color: transparent;
+        color: transparent;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        pointer-events: auto;
+        -webkit-appearance: none;
+        left: -10px;
+        height: v-bind(frameHeight + 'px');
+        width: 6px;
+        border-radius: 3px;
+        background: var(--ctp-macchiato-rosewater);
+        cursor: pointer;
+        margin-top: 0px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+        box-sizing: content-box;
+
+        outline: 0px solid var(--ctp-macchiato-lavender);
+
+        transition-property: outline;
+        transition-duration: .2s;
+        transition-delay: 0s;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover, input[type=range]::-webkit-slider-thumb:active {
+        outline: 3px solid var(--ctp-macchiato-lavender);
     }
 </style>
