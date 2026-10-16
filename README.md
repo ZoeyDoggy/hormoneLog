@@ -29,10 +29,11 @@
 - [ ] sort table
 - [ ] loading icon for DB actions
 
+- [ ] fix empty fields filling with null
+
 - [x] auto table generation
 - [x] new line submission
 - [x] line editing
-- [x] fix empty fields filling with null
 - [x] line deletion
 - [x] pretty formatting time column
 - [x] dropdown for Ester 
