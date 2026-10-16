@@ -267,26 +267,7 @@
 
         
     }
-    input, select {
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
 
-        padding: 2px 5px 2px 5px;
-
-        border: none;
-        border-radius: 5px;
-
-        color: var(--ctp-macchiato-text);
-        background-color: var(--ctp-macchiato-surface0);
-    }
-    input::-webkit-input-placeholder, select::-webkit-input-placeholder {
-        color: var(--ctp-macchiato-subtext0);
-    }
-
-    .inputDiv {
-        padding: 2px;
-    }
     button {
         height: inherit;
         aspect-ratio: 1;

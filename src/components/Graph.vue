@@ -130,7 +130,6 @@
             width: graphDiv.value.offsetWidth,
 
             marks: [
-                // Plot.ruleY([-20]),
                 Plot.frame(),
                 Plot.axisY({anchor: "left", tickSpacing: 50}),
                 Plot.axisY({anchor: "right", tickSpacing: 50}),
@@ -138,12 +137,17 @@
                 Plot.ruleX([Number(viewStart.value), Number(viewEnd.value)], {stroke: 'none'}),
                 Plot.ruleY([-50, 800], {stroke: 'none'}),
 
-                // Plot.dot(props.injectionsData, {
-                //     x: "time", 
-                //     y: "dose",
-                //     r: 1,
-                //     fill: 'yellow',
-                // }),
+                Plot.line(customDoseCurve.filter((data) => 
+                        data.Time >= viewStart.value && 
+                        data.Time <= viewEnd.value), {
+                    x: 'Time',
+                    y: 'E2',
+                    r: 1,
+                    stroke: flavors.macchiato.colors.text.hex,
+                    channels: {name: "Time"},
+                    className: "customLine",
+                    tip: true
+                }),
 
                 Plot.dot(props.testsData.filter((object) => 
                         object.test == 'Estradiol' && 
@@ -171,18 +175,6 @@
                     stroke: flavors.macchiato.colors.blue.hex,
                 }),
 
-                Plot.line(customDoseCurve.filter((data) => 
-                        data.Time >= viewStart.value && 
-                        data.Time <= viewEnd.value), {
-                    x: 'Time',
-                    y: 'E2',
-                    r: 1,
-                    stroke: flavors.macchiato.colors.text.hex,
-                    channels: {name: "Time"},
-                    className: "customLine",
-                    tip: true
-                }),
-                
                 // Plot.areaY(targetRange, {
                 //     x: 'time', y1: 'lower', y2: 'upper',
                 //     fill: 'orange',
