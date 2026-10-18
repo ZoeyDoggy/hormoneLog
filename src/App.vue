@@ -76,6 +76,14 @@
     display: flex;
   }
 
+  #injectionsTable {
+    width: 40%;
+  }
+  
+  #testsTable {
+    width: 30%
+  }
+
   .inputDiv {
     padding: 2px;
   }

@@ -80,13 +80,13 @@
 
 <style scoped>
     #calendar {
-        min-width: 400px;
-        overflow: scroll;
+        overflow-y: scroll;
+
+        display: flex;
+        flex-direction: column;
     }
 
     .dateGrid {
-        width: 15%;
-
         display: grid;
         grid-template-columns: repeat(7, 1fr);
 
