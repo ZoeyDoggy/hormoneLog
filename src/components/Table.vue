@@ -170,57 +170,59 @@
 </script>
 
 <template>
-    <table>
-        <thead>
-            <tr>
-                <template v-for="item in Object.keys(result[0])">
-                    <th  v-if="item != 'uuid'" :class="`${item}Column`">{{ item }}</th>
-                </template>
-                <th :class="`buttonColumn`"></th>
-            </tr>
-
-            <tr>
-                <template v-for="(item, key) in result[0]">
-                    <td v-if="key != 'uuid'">
-                        <div class="inputDiv"> 
-                            <select v-if="['ester', 'site', 'recipient', 'vial', 'test', 'unit'].includes(key)" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
-                                <option v-for="name in Array.from( new Set( result.map(a => a[key])))" :value="name">
-                                    {{ name }}
-                                </option>
-                            </select>
-
-                            <input v-else :type="inputType[key]" :placeholder="key" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
-                        </div>
-                    </td>
-                </template>
-                <td><button value="submit" @click="postObject"><Save /></button></td>
-            </tr>
-        </thead>
-
-        <tbody>
-        
-            <template v-for="row in result" :key="row.uuid">
-                <tr v-if="row.recipient == props.recipient">
-                    <template v-for="(data, key) in row">
-
-                        <template v-if="key != 'uuid'">
-                            <td v-if="focusRow != row.uuid">{{ formatData(key, data) }}</td>
-                            <td v-else><input :type="inputType[key]" :placeholder="key" :value="formatInput(key, putParams.get(key))" @change="event => updatePutParams(key, event.target.value)"></td>
-                        </template>
-
+    <div class="graphDiv">
+        <table>
+            <thead>
+                <tr>
+                    <template v-for="item in Object.keys(result[0])">
+                        <th  v-if="item != 'uuid'" :class="`${item}Column`">{{ item }}</th>
                     </template>
-                    
-                    <td v-if="focusRow != row.uuid"><button id="rowEdit" @click="focusRow = row.uuid"><SquarePen /></button></td>
-                    <template v-else>
-                        <td><button @click="putObject"><Save /></button></td>
-                        <td><button @click="deleteObject"><Trash /></button></td>
-                        <td><button @click="focusRow = ''"><X /></button></td>
-                    </template>
-                        
+                    <th :class="`buttonColumn`"></th>
                 </tr>
-            </template>
-        </tbody>
-    </table>
+    
+                <tr>
+                    <template v-for="(item, key) in result[0]">
+                        <td v-if="key != 'uuid'">
+                            <div class="inputDiv"> 
+                                <select v-if="['ester', 'site', 'recipient', 'vial', 'test', 'unit'].includes(key)" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
+                                    <option v-for="name in Array.from( new Set( result.map(a => a[key])))" :value="name">
+                                        {{ name }}
+                                    </option>
+                                </select>
+    
+                                <input v-else :type="inputType[key]" :placeholder="key" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
+                            </div>
+                        </td>
+                    </template>
+                    <td><button value="submit" @click="postObject"><Save /></button></td>
+                </tr>
+            </thead>
+    
+            <tbody>
+            
+                <template v-for="row in result" :key="row.uuid">
+                    <tr v-if="row.recipient == props.recipient">
+                        <template v-for="(data, key) in row">
+    
+                            <template v-if="key != 'uuid'">
+                                <td v-if="focusRow != row.uuid">{{ formatData(key, data) }}</td>
+                                <td v-else><input :type="inputType[key]" :placeholder="key" :value="formatInput(key, putParams.get(key))" @change="event => updatePutParams(key, event.target.value)"></td>
+                            </template>
+    
+                        </template>
+                        
+                        <td v-if="focusRow != row.uuid"><button id="rowEdit" @click="focusRow = row.uuid"><SquarePen /></button></td>
+                        <template v-else>
+                            <td><button @click="putObject"><Save /></button></td>
+                            <td><button @click="deleteObject"><Trash /></button></td>
+                            <td><button @click="focusRow = ''"><X /></button></td>
+                        </template>
+                            
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 
@@ -239,9 +241,16 @@
         background-color: var(--ctp-macchiato-mantle);
     }
 
+    .graphDiv {
+        overflow: scroll;
+        width: 100%;
+        pointer-events: auto;
+
+        margin-bottom: 20px;
+    }
+
     table {
         width: 100%;
-        height: fit-content;
         margin: 5px;
         table-layout: auto;
         border-collapse: collapse;

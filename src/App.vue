@@ -3,6 +3,7 @@
 
   import Table from "./components/Table.vue";
   import Graph from "./components/Graph.vue";
+  import Calendar from "./components/Calendar.vue";
 
   const URL = ref(localStorage.getItem("URL"));
 
@@ -57,7 +58,9 @@
     
   <Graph :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Graph>
 
-  <div style="display: flex;">
+  <div id="dataView">
+    <Calendar :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Calendar>
+
     <Table :recipient="focusedRecipient" :URL="URL" :path="'injections'" id="injectionsTable" @update="callback => injections = callback"></Table>
   
     <Table :recipient="focusedRecipient" :URL="URL" :path="'tests'" id="testsTable" @update="callback => tests = callback"></Table>
@@ -66,11 +69,11 @@
 
 <style>
 
-  #injectionsTable {
-    width: 60%;
-  }
-  #testsTable {
-    width: 40%;
+  #dataView {
+    height: 100%;
+    overflow: hidden;
+
+    display: flex;
   }
 
   .inputDiv {
