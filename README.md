@@ -1,9 +1,17 @@
 # hormoneLog
 
-- [ ] calendar view
+### Calendar
+- [x] calendar view
+- [ ] add labs to calendar
+- [ ] dynamic colors for ester
+- [ ] 'infinite' scroll
+- [ ] range view?
+- [ ] better styling on month title
+- [ ] calendar year
 
 ### Mobile
 - [ ] mobile friendly add entry
+- [ ] sidebar on desktop site
 
 ### Backend
 - [ ] add server handshake endpoint with version number
@@ -19,6 +27,8 @@
 
 - [ ] exact date ranges on rangeView
 - [ ] firefox + chrome support for rangeView
+- [ ] make rangeview auto update when set to zero
+- [ ] set rangeview to zero when at the start or end of graph
 
 - [ ] area of uncertainty
 
@@ -38,4 +48,9 @@
 - [x] pretty formatting time column
 - [x] dropdown for Ester 
 - [x] dropdown for test type
+
+### Cross interaction
+- [ ] calendar date interaction (highlights graph and table)
+- [ ] graph interaction (highlights calendar and table)
+- [ ] table interaction (highlights calendar and graph)
 

@@ -70,18 +70,25 @@
 <style>
 
   #dataView {
+    width: 100%;
     height: 100%;
     overflow: hidden;
 
     display: flex;
+
+    justify-content: space-between;
+  }
+
+  #calendar {
+    flex-grow: 1;
   }
 
   #injectionsTable {
-    width: 40%;
+    flex-grow: 2;
   }
   
   #testsTable {
-    width: 30%
+    flex-grow: 2;
   }
 
   .inputDiv {

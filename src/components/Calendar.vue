@@ -59,7 +59,6 @@
             <div class="dateGrid">
                 <div class="dateSquare" v-for="(day, dayIndex) in month.numberOfDays" v-bind:style= "[dayIndex === 0 ? {'grid-column-start': month.startNum + 1} : {'grid-column-start': '0'}]">
                     
-
                     <template v-if="dateLookup.find((element) => element.date.includes(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`))">
                         <div class="indicator">
                             <p>{{ day }}</p>
@@ -84,23 +83,44 @@
 
         display: flex;
         flex-direction: column;
+
+        min-width: 250px;
+        max-width: 400px;
     }
 
     .dateGrid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
+        grid-auto-rows: 1fr;
 
         .dateSquare {
-            aspect-ratio: 1;
             display: flex;
             justify-content: center;
             align-items: center;
 
+            height: inherit;
+            overflow: hidden;
+
             border: 1px solid var(--ctp-mocha-overlay2);
         }
     }
-    .month:nth-child(even) div p {
-        color: var(--ctp-mocha-overlay2);
+
+    p {
+        margin: 0;
+    }
+
+    .dateGrid::before {
+        content: '';
+        width: 0;
+        padding-bottom: 100%;
+        grid-row: 1 / 1;
+        grid-column: 1 / 1;
+    }
+
+    .month {
+        display: flex;
+        flex-direction: column;
+        width: inherit;
     }
 
     .indicator {

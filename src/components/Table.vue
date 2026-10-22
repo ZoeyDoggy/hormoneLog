@@ -243,7 +243,6 @@
 
     .graphDiv {
         overflow: scroll;
-        width: 100%;
         pointer-events: auto;
 
         margin-bottom: 20px;
