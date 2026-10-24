@@ -243,15 +243,20 @@
 
     .graphDiv {
         overflow: scroll;
+        overscroll-behavior: none;
         pointer-events: auto;
 
         margin-bottom: 20px;
+
+        padding-top: 0px;
     }
 
     table {
         width: 100%;
         table-layout: auto;
         border-collapse: collapse;
+
+        position: relative;
     }
     td {
         height: inherit;
@@ -300,5 +305,28 @@
     }
     th {
         text-transform: capitalize;
+    }
+
+    thead {
+        position: sticky;
+
+        top: 0;
+
+        background-color: var(--ctp-macchiato-crust);
+        filter: drop-shadow(0px 2px 5px rgb(from var(--ctp-macchiato-crust) r g b / 100%));
+
+        z-index: 10;
+        
+        
+
+        tr {
+            background-color: var(--ctp-macchiato-crust);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--ctp-macchiato-crust);
+        }
+
+    
     }
 </style>

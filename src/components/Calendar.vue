@@ -94,6 +94,8 @@
 
         min-width: 250px;
         max-width: 400px;
+
+        margin-bottom: 20px;
     }
 
     .dateGrid {

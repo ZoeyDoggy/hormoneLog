@@ -41,6 +41,9 @@
 
 - [ ] fix empty fields filling with null
 
+- [x] sticky top bar
+- [ ] sticky top bar padding
+
 - [x] auto table generation
 - [x] new line submission
 - [x] line editing
