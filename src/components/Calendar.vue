@@ -42,6 +42,14 @@
             console.log(dateLookup.value.find((element) => element.date == '1/1/2024').uuid)
         })
         watch(() => props.testsData, () => {
+
+            for (const data of props.testsData) {
+                if (props.recipient.includes(data.recipient)) {
+                    
+                    const date = new Date(data.time);
+                    dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid})
+                }
+            }
         })
         watch(() => props.recipient, () => {
         })
@@ -50,7 +58,7 @@
 
 <template>
 
-    <div id="calendar">
+    <div id="calendar" class="surface">
         <div>Calendar</div>
         <div class="month" v-for="(month, monthIndex) in exampleYear.months">
 
@@ -60,7 +68,7 @@
                 <div class="dateSquare" v-for="(day, dayIndex) in month.numberOfDays" v-bind:style= "[dayIndex === 0 ? {'grid-column-start': month.startNum + 1} : {'grid-column-start': '0'}]">
                     
                     <template v-if="dateLookup.find((element) => element.date.includes(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`))">
-                        <div class="indicator">
+                        <div class="indicator injection">
                             <p>{{ day }}</p>
                         </div>
                     </template>
@@ -124,7 +132,6 @@
     }
 
     .indicator {
-        background-color: var(--ctp-mocha-lavender);
         width: 50%;
         height: 50%;
         border: none;
@@ -136,5 +143,13 @@
         p {
             color: var(--ctp-mocha-crust);
         }
+    }
+
+    .injection {
+        background-color: var(--ctp-mocha-lavender);
+    }
+
+    .test {
+        background-color: var(--ctp-mocha-red);
     }
 </style>

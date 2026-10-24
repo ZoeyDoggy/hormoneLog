@@ -257,7 +257,7 @@
 
 <template>
 
-    <div id="graphWindow">
+    <div id="graphWindow" class="surface">
         <div ref="graphDiv" id="graph"></div>
         <div id="rangeSelector">
             <div ref="smallGraph" id="smallGraph"></div>
@@ -285,10 +285,6 @@
         position: absolute;
         height: 100%;
         width: 100%;
-    }
-
-    #graphWindow {
-        background-color: var(--ctp-macchiato-crust);
     }
 
     #rangeContainer {

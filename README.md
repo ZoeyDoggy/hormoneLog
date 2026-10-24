@@ -53,4 +53,3 @@
 - [ ] calendar date interaction (highlights graph and table)
 - [ ] graph interaction (highlights calendar and table)
 - [ ] table interaction (highlights calendar and graph)
-

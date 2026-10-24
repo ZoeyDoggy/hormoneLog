@@ -170,7 +170,7 @@
 </script>
 
 <template>
-    <div class="graphDiv">
+    <div class="graphDiv surface">
         <table>
             <thead>
                 <tr>
@@ -250,11 +250,8 @@
 
     table {
         width: 100%;
-        margin: 5px;
         table-layout: auto;
         border-collapse: collapse;
-
-        background-color: var(--ctp-macchiato-crust);
     }
     td {
         height: inherit;
