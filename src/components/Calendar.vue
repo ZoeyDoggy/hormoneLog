@@ -60,6 +60,7 @@
 <template>
 
     <div id="calendar" class="surface">
+        <div>{{ exampleYear.year }}</div>
         <div class="month" v-for="(month, monthIndex) in exampleYear.months">
 
             <h3>{{ month.month }}</h3>
@@ -67,13 +68,15 @@
             <div class="dateGrid">
                 <div class="dateSquare" v-for="(day, dayIndex) in month.numberOfDays" v-bind:style= "[dayIndex === 0 ? {'grid-column-start': month.startNum + 1} : {'grid-column-start': '0'}]">
                     
-                    <template v-if="dateLookup.find((element) => element.date.includes(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`))">
+                    <template v-if="dateLookup.find((element) => element.date == `${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)">
                         <div>
                             <p>{{ day }}</p>
                         </div>
-                        <template v-for="data in dateLookup.filter((element) => element.date.includes(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`))">
-                            <div class="indicator" v-bind:class="data.type">
-                                <!-- <p>{{ data.type }}</p> -->
+                        <template v-for="data in dateLookup.filter((element) => element.date == `${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)">
+                            <div class="indicator" v-bind:class="data.type" v-bind:id="data.uuid">
+                                <p v-if="data.type.includes('Estradiol') || data.type.includes('Testosterone')">{{ data.type.substring(0, 1) }}</p>
+                                <p v-else-if="data.type.includes('Enanthate')">een</p>
+                                <p v-else-if="data.type.includes('Valerate')">ev</p>
                             </div>
                         </template>
                     </template>
@@ -99,7 +102,7 @@
         flex-direction: column;
 
         min-width: 250px;
-        max-width: 400px;
+        max-width: 325px;
 
         margin-bottom: 20px;
     }
@@ -115,12 +118,19 @@
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(2, 1fr);
 
-            gap: 2px;
+            gap: 3px;
 
             height: inherit;
             overflow: hidden;
 
             border: .5px solid var(--ctp-mocha-overlay2);
+        }
+
+        .dateSquare:hover {
+            background-color: var(--ctp-mocha-overlay0);
+            border-radius: 5px;
+
+            border: none;
         }
     }
 
@@ -152,21 +162,33 @@
         align-items: center;
 
         border-radius: 5px;
+
+        overflow: hidden;
+        text-align: start;
+        text-overflow: clip;
     }
 
     .Enanthate {
-        background-color: var(--ctp-mocha-lavender);
+        background-color: var(--ctp-mocha-mauve);
+        color: var(--ctp-mocha-crust);
+        font-size: 8pt;
     }
 
     .Valerate {
-        background-color: var(--ctp-mocha-green);
+        background-color: var(--ctp-mocha-red);
+        color: var(--ctp-mocha-crust);
+        font-size: 8pt;
     }
 
     .Estradiol {
         background-color: var(--ctp-mocha-red);
+        color: var(--ctp-mocha-crust);
+        font-size: 8pt;
     }
 
     .Testosterone {
         background-color: var(--ctp-mocha-blue);
+        color: var(--ctp-mocha-crust);
+        font-size: 8pt;
     }
 </style>
