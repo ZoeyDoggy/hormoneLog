@@ -6,7 +6,7 @@
 
     var exampleYear = {};
 
-    exampleYear.year = 2026;
+    exampleYear.year = 2024;
     exampleYear.months = [];
     exampleYear.total = 0;
 
@@ -35,7 +35,7 @@
                 if (props.recipient.includes(data.recipient)) {
                     
                     const date = new Date(data.time);
-                    dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid})
+                    dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.ester})
                 }
             }
             console.log(dateLookup.value);
@@ -47,9 +47,10 @@
                 if (props.recipient.includes(data.recipient)) {
                     
                     const date = new Date(data.time);
-                    dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid})
+                    dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.test})
                 }
             }
+            console.log(dateLookup.value);
         })
         watch(() => props.recipient, () => {
         })
@@ -59,7 +60,6 @@
 <template>
 
     <div id="calendar" class="surface">
-        <div>Calendar</div>
         <div class="month" v-for="(month, monthIndex) in exampleYear.months">
 
             <h3>{{ month.month }}</h3>
@@ -68,14 +68,20 @@
                 <div class="dateSquare" v-for="(day, dayIndex) in month.numberOfDays" v-bind:style= "[dayIndex === 0 ? {'grid-column-start': month.startNum + 1} : {'grid-column-start': '0'}]">
                     
                     <template v-if="dateLookup.find((element) => element.date.includes(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`))">
-                        <div class="indicator injection">
+                        <div>
                             <p>{{ day }}</p>
                         </div>
+                        <template v-for="data in dateLookup.filter((element) => element.date.includes(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`))">
+                            <div class="indicator" v-bind:class="data.type">
+                                <!-- <p>{{ data.type }}</p> -->
+                            </div>
+                        </template>
                     </template>
                     <template v-else>
                         <div>
                             <p>{{ day }}</p>
                         </div>
+                        
                     </template>
                 </div>
             </div>
@@ -104,14 +110,17 @@
         grid-auto-rows: 1fr;
 
         .dateSquare {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+
+            gap: 2px;
 
             height: inherit;
             overflow: hidden;
 
-            border: 1px solid var(--ctp-mocha-overlay2);
+            border: .5px solid var(--ctp-mocha-overlay2);
         }
     }
 
@@ -133,25 +142,31 @@
         width: inherit;
     }
 
-    .indicator {
-        width: 50%;
-        height: 50%;
+    .dateSquare div {
+        width: 100%;
+        height: 100%;
         border: none;
 
         display: flex;
         justify-content: center;
         align-items: center;
 
-        p {
-            color: var(--ctp-mocha-crust);
-        }
+        border-radius: 5px;
     }
 
-    .injection {
+    .Enanthate {
         background-color: var(--ctp-mocha-lavender);
     }
 
-    .test {
+    .Valerate {
+        background-color: var(--ctp-mocha-green);
+    }
+
+    .Estradiol {
         background-color: var(--ctp-mocha-red);
+    }
+
+    .Testosterone {
+        background-color: var(--ctp-mocha-blue);
     }
 </style>

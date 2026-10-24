@@ -2,8 +2,8 @@
 
 ### Calendar
 - [x] calendar view
-- [ ] add labs to calendar
-- [ ] dynamic colors for ester
+- [x] add labs to calendar
+- [x] dynamic colors for ester
 - [ ] 'infinite' scroll
 - [ ] range view?
 - [ ] better styling on month title
