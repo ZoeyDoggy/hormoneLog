@@ -17,6 +17,8 @@
   const recipients = ref([]);
   const focusedRecipient = ref(localStorage.getItem("recipient"))
 
+  const activeData = ref();
+
   watch(focusedRecipient, (newRecipient) => {
     localStorage.setItem("recipient", newRecipient);
   })
@@ -34,6 +36,8 @@
 </script>
 
 <template>
+
+  <div>{{ activeData }}</div>
 
   <div class="inputDiv">
     <input
@@ -59,7 +63,7 @@
   <Graph :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Graph>
 
   <div id="dataView">
-    <Calendar :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Calendar>
+    <Calendar :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests" @activeData="(data) => activeData = data"></Calendar>
 
     <Table :recipient="focusedRecipient" :URL="URL" :path="'injections'" id="injectionsTable" @update="callback => injections = callback"></Table>
   

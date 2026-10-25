@@ -4,9 +4,11 @@
 
     const props = defineProps(['injectionsData', 'testsData', 'recipient']);
 
+    const emit = defineEmits(['activeData'])
+
     var exampleYear = {};
 
-    exampleYear.year = 2024;
+    exampleYear.year = 2026;
     exampleYear.months = [];
     exampleYear.total = 0;
 
@@ -55,6 +57,10 @@
         watch(() => props.recipient, () => {
         })
     })
+
+    function updateActiveData(day) {
+        emit('activeData', {'uuid': dateLookup.value.filter((element) => element.date == day), 'date': day})
+    }
 </script>
 
 <template>
@@ -66,7 +72,7 @@
             <h3>{{ month.month }}</h3>
             
             <div class="dateGrid">
-                <div class="dateSquare" v-for="(day, dayIndex) in month.numberOfDays" v-bind:style= "[dayIndex === 0 ? {'grid-column-start': month.startNum + 1} : {'grid-column-start': '0'}]">
+                <div class="dateSquare" v-for="(day, dayIndex) in month.numberOfDays" v-bind:style= "[dayIndex === 0 ? {'grid-column-start': month.startNum + 1} : {'grid-column-start': '0'}]" @click="updateActiveData(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)">
                     
                     <template v-if="dateLookup.find((element) => element.date == `${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)">
                         <div>
