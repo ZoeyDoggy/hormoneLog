@@ -53,6 +53,12 @@
 - [x] dropdown for test type
 
 ### Cross interaction
-- [ ] calendar date interaction (highlights graph and table)
-- [ ] graph interaction (highlights calendar and table)
-- [ ] table interaction (highlights calendar and graph)
+- [x] emit calendar date interaction
+- [ ] emit graph date interaction
+- [ ] emit table date interaction
+- [x] calendar highlight
+    - [ ] scroll to
+- [ ] graph highlight
+- [ ] table highlight
+    - [ ] scroll to
+

@@ -1,10 +1,11 @@
 <script setup>
-    import { ref, watch, onMounted } from "vue";
+    import { ref, watch, onMounted, useTemplateRef } from "vue";
     import { SquarePen, Save, Trash, X, Check } from '@lucide/vue';
 
-    const props = defineProps(['injectionsData', 'testsData', 'recipient']);
+    const props = defineProps(['injectionsData', 'testsData', 'recipient', 'activeData']);
 
     const emit = defineEmits(['activeData'])
+    const itemRefs = useTemplateRef('items');
 
     var exampleYear = {};
 
@@ -40,8 +41,6 @@
                     dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.ester})
                 }
             }
-            console.log(dateLookup.value);
-            console.log(dateLookup.value.find((element) => element.date == '1/1/2024').uuid)
         })
         watch(() => props.testsData, () => {
 
@@ -52,14 +51,29 @@
                     dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.test})
                 }
             }
-            console.log(dateLookup.value);
         })
         watch(() => props.recipient, () => {
+        })
+
+        watch(() => props.activeData, (newFocus, oldFocus) => {
+
+            if(oldFocus.date) {
+                itemRefs.value.find((element) => element.id == oldFocus.date).classList.remove("focusedData");
+            }
+
+            if (newFocus.date) {
+                itemRefs.value.find((element) => element.id == newFocus.date).classList.add("focusedData");
+            }
         })
     })
 
     function updateActiveData(day) {
-        emit('activeData', {'uuid': dateLookup.value.filter((element) => element.date == day), 'date': day})
+
+        if(props.activeData.date === day) {
+            emit('activeData', {'uuid': [], 'date': ''})
+        } else {
+            emit('activeData', {'uuid': dateLookup.value.filter((element) => element.date == day), 'date': day})
+        }
     }
 </script>
 
@@ -72,7 +86,13 @@
             <h3>{{ month.month }}</h3>
             
             <div class="dateGrid">
-                <div class="dateSquare" v-for="(day, dayIndex) in month.numberOfDays" v-bind:style= "[dayIndex === 0 ? {'grid-column-start': month.startNum + 1} : {'grid-column-start': '0'}]" @click="updateActiveData(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)">
+                <div class="dateSquare" 
+                    ref="items"
+                    :id="`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`"
+                    v-for="(day, dayIndex) in month.numberOfDays" 
+                    v-bind:style= "[dayIndex === 0 ? {'grid-column-start': month.startNum + 1} : {'grid-column-start': '0'}]" 
+                    @click="updateActiveData(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)"
+                    >
                     
                     <template v-if="dateLookup.find((element) => element.date == `${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)">
                         <div>
@@ -196,5 +216,9 @@
         background-color: var(--ctp-mocha-blue);
         color: var(--ctp-mocha-crust);
         font-size: 8pt;
+    }
+
+    .focusedData, .dateSquare.focusedData:hover {
+        background-color: var(--ctp-mocha-blue);
     }
 </style>

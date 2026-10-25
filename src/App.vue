@@ -17,7 +17,7 @@
   const recipients = ref([]);
   const focusedRecipient = ref(localStorage.getItem("recipient"))
 
-  const activeData = ref();
+  const activeData = ref({'uuid': [], 'date': ''});
 
   watch(focusedRecipient, (newRecipient) => {
     localStorage.setItem("recipient", newRecipient);
@@ -63,7 +63,7 @@
   <Graph :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Graph>
 
   <div id="dataView">
-    <Calendar :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests" @activeData="(data) => activeData = data"></Calendar>
+    <Calendar :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests" :activeData="activeData" @activeData="(data) => activeData = data"></Calendar>
 
     <Table :recipient="focusedRecipient" :URL="URL" :path="'injections'" id="injectionsTable" @update="callback => injections = callback"></Table>
   
