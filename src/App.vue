@@ -65,9 +65,9 @@
   <div id="dataView">
     <Calendar :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests" :activeData="activeData" @activeData="(data) => activeData = data"></Calendar>
 
-    <Table :recipient="focusedRecipient" :URL="URL" :path="'injections'" id="injectionsTable" @update="callback => injections = callback"></Table>
+    <Table :recipient="focusedRecipient" :URL="URL" :path="'injections'" id="injectionsTable" :activeData="activeData" @update="callback => injections = callback"></Table>
   
-    <Table :recipient="focusedRecipient" :URL="URL" :path="'tests'" id="testsTable" @update="callback => tests = callback"></Table>
+    <Table :recipient="focusedRecipient" :URL="URL" :path="'tests'" id="testsTable" :activeData="activeData" @update="callback => tests = callback"></Table>
   </div>
 </template>
 

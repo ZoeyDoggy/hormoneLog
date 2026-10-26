@@ -1,13 +1,15 @@
 <script setup>
-    import { ref, watch } from "vue";
+    import { ref, watch, useTemplateRef, onMounted } from "vue";
 
     const emit = defineEmits(['update'])
 
     import { SquarePen, Save, Trash, X, Check } from '@lucide/vue';
 
-    const props = defineProps(['URL', 'path', 'recipient']);
+    const props = defineProps(['URL', 'path', 'recipient', 'activeData']);
 
     const result = ref([{}]);
+
+    const rowRefs = useTemplateRef('rows');
 
     const postParams = ref(new URLSearchParams());
     const putParams = ref(new URLSearchParams());
@@ -167,6 +169,44 @@
 
         emit('update', newResult);
     })
+
+    onMounted(() => {
+
+        watch(() => props.activeData, (newFocus, oldFocus) => {
+
+            for(const item of newFocus.uuid) {
+                const element = rowRefs.value.find((element) => element.id == item.uuid);
+                
+                if (element) {
+                    element.classList.add("focusedData");
+
+                    element.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                        inline: "nearest"
+                    });
+                }
+            }
+
+            for(const item of oldFocus.uuid) {
+                const uuid = rowRefs.value.find((element) => element.id == item.uuid);
+                
+                if (uuid) {
+                    rowRefs.value.find((element) => element.id == item.uuid).classList.remove("focusedData");
+                }
+            }
+
+            //console.log(rowRefs.value.find((element) => element.id == activeData))
+
+            // if(oldFocus.date) {
+            //     itemRefs.value.find((element) => element.id == oldFocus.date).classList.remove("focusedData");
+            // }
+
+            // if (newFocus.date) {
+            //     itemRefs.value.find((element) => element.id == newFocus.date).classList.add("focusedData");
+            // }
+        })
+    });
 </script>
 
 <template>
@@ -201,7 +241,7 @@
             <tbody>
             
                 <template v-for="row in result" :key="row.uuid">
-                    <tr v-if="row.recipient == props.recipient">
+                    <tr v-if="row.recipient == props.recipient" :id="row.uuid" ref="rows">
                         <template v-for="(data, key) in row">
     
                             <template v-if="key != 'uuid'">
@@ -236,6 +276,8 @@
     tr {
         height: 25px;
         border-style: none;
+        overflow: visible;
+        border-radius: 0;
     }
     tr:nth-child(even) {
         background-color: var(--ctp-macchiato-mantle);
@@ -326,7 +368,13 @@
         tr:nth-child(even) {
             background-color: var(--ctp-macchiato-crust);
         }
+    }
 
-    
+    tr.focusedData, tr.focusedData:hover {
+        background-color: var(--ctp-mocha-surface0);
+        outline: 3px solid var(--ctp-mocha-blue);
+        border-radius: 5px;
+
+        z-index: 10;
     }
 </style>

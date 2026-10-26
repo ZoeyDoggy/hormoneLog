@@ -59,6 +59,7 @@
 - [x] calendar highlight
     - [ ] scroll to
 - [ ] graph highlight
-- [ ] table highlight
-    - [ ] scroll to
+- [x] table highlight
+    - [x] scroll to
+    - [ ] outline fix clipping
 
