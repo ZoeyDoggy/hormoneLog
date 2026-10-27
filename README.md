@@ -62,4 +62,9 @@
 - [x] table highlight
     - [x] scroll to
     - [ ] outline fix clipping
+    - [ ] autofill date if no injection/test exists
+
+### Styling 
+- [~] global hover style (started)
+- [ ] global highlighted style
 

@@ -28,3 +28,25 @@ body {margin: 0; height: 100dvh; overflow-y: hidden}
 
     filter: drop-shadow(0px 2px 2px rgb(from var(--ctp-macchiato-crust) r g b / 70%));
 }
+
+.hoverInteract {
+
+    border: none;
+    filter: none;
+}
+
+.hoverInteract:hover {
+    background-color: var(--ctp-mocha-overlay0);
+    border-radius: 10px;
+
+    box-shadow: 0px 0px 5px 3px rgb(from var(--ctp-mocha-blue) r g b / 70%);
+
+    td:first-child {
+        border-top-left-radius: 10px; 
+        border-bottom-left-radius: 10px;
+    }
+    td:last-child {
+        border-bottom-right-radius: 10px; 
+        border-top-right-radius: 10px; 
+    }
+}

@@ -86,7 +86,7 @@
             <h3>{{ month.month }}</h3>
             
             <div class="dateGrid">
-                <div class="dateSquare" 
+                <div class="dateSquare hoverInteract" 
                     ref="items"
                     :id="`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`"
                     v-for="(day, dayIndex) in month.numberOfDays" 
@@ -150,13 +150,6 @@
             overflow: hidden;
 
             border: .5px solid var(--ctp-mocha-overlay2);
-        }
-
-        .dateSquare:hover {
-            background-color: var(--ctp-mocha-overlay0);
-            border-radius: 5px;
-
-            border: none;
         }
     }
 

@@ -241,7 +241,7 @@
             <tbody>
             
                 <template v-for="row in result" :key="row.uuid">
-                    <tr v-if="row.recipient == props.recipient" :id="row.uuid" ref="rows">
+                    <tr v-if="row.recipient == props.recipient" :id="row.uuid" ref="rows" class="hoverInteract">
                         <template v-for="(data, key) in row">
     
                             <template v-if="key != 'uuid'">
@@ -275,9 +275,8 @@
     }
     tr {
         height: 25px;
-        border-style: none;
         overflow: visible;
-        border-radius: 0;
+        border-radius: 5px;
     }
     tr:nth-child(even) {
         background-color: var(--ctp-macchiato-mantle);
