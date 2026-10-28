@@ -65,6 +65,6 @@
     - [ ] autofill date if no injection/test exists
 
 ### Styling 
-- [~] global hover style (started)
-- [ ] global highlighted style
+- [x] global hover style (started)
+- [x] global highlighted style
 

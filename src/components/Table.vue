@@ -368,12 +368,4 @@
             background-color: var(--ctp-macchiato-crust);
         }
     }
-
-    tr.focusedData, tr.focusedData:hover {
-        background-color: var(--ctp-mocha-surface0);
-        outline: 3px solid var(--ctp-mocha-blue);
-        border-radius: 5px;
-
-        z-index: 10;
-    }
 </style>

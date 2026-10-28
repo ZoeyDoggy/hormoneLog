@@ -210,10 +210,4 @@
         color: var(--ctp-mocha-crust);
         font-size: 8pt;
     }
-
-    .dateSquare.focusedData, .dateSquare.focusedData:hover {
-        background-color: var(--ctp-mocha-surface0);
-        outline: 3px solid var(--ctp-mocha-blue);
-        border-radius: 5px;
-    }
 </style>

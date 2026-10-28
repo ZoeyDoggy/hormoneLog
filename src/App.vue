@@ -37,8 +37,6 @@
 
 <template>
 
-  <div>{{ activeData }}</div>
-
   <div class="inputDiv">
     <input
       type="url"
@@ -59,8 +57,15 @@
       </option>
     </select>
   </div>
-    
-  <Graph :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Graph>
+  
+  <div id="topView">
+    <Graph :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Graph>
+    <div id="debug" class="surface">
+      <h3>debug</h3>
+      <div>{{ activeData }}</div>
+    </div>
+  </div>
+  
 
   <div id="dataView">
     <Calendar :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests" :activeData="activeData" @activeData="(data) => activeData = data"></Calendar>
@@ -72,6 +77,18 @@
 </template>
 
 <style>
+
+  #topView {
+    display: flex;
+    flex-direction: row;
+
+    gap: 10px;
+  }
+
+  #debug {
+    width: 200px;
+    font-size: 8pt;
+  }
 
   #dataView {
     width: 100%;

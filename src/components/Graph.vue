@@ -277,6 +277,10 @@
 
 <style>
 
+    #graphWindow {
+        width: 100%;
+    }
+
     #rangeSelector {
         position: relative;
         height: 110px;

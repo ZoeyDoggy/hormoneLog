@@ -8,6 +8,8 @@ body {
     background-color: var(--ctp-macchiato-base);
 
     padding: 10px;
+
+    --hoverBorderRadius: 8px;
 }
 
 body {margin: 0; height: 100dvh; overflow-y: hidden}
@@ -36,17 +38,29 @@ body {margin: 0; height: 100dvh; overflow-y: hidden}
 }
 
 .hoverInteract:hover {
-    background-color: var(--ctp-mocha-overlay0);
-    border-radius: 10px;
 
-    box-shadow: 0px 0px 5px 3px rgb(from var(--ctp-mocha-blue) r g b / 70%);
+    background-color: var(--ctp-mocha-surface1) !important;
+    border-radius: var(--hoverBorderRadius);
+
+    /* box-shadow: 0px 0px 6px 1px rgb(from var(--ctp-mocha-blue) r g b / 30%);
+    -webkit-box-shadow: 0px 0px 6px 1px rgb(from var(--ctp-mocha-blue) r g b / 30%); */
+
+    border: none !important;
 
     td:first-child {
-        border-top-left-radius: 10px; 
-        border-bottom-left-radius: 10px;
+        border-top-left-radius: var(--hoverBorderRadius);
+        border-bottom-left-radius: var(--hoverBorderRadius);
     }
     td:last-child {
-        border-bottom-right-radius: 10px; 
-        border-top-right-radius: 10px; 
+        border-bottom-right-radius: var(--hoverBorderRadius);
+        border-top-right-radius: var(--hoverBorderRadius);
     }
+}
+
+*.focusedData, *.focusedData:hover {
+    background-color: var(--ctp-mocha-surface0) !important;
+    outline: 3px solid var(--ctp-mocha-blue);
+    border-radius: var(--hoverBorderRadius);
+
+    z-index: 10;
 }
