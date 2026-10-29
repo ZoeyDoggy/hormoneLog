@@ -64,8 +64,17 @@
             }
 
             if (newFocus.date) {
-                if(itemRefs.value.find((element) => element.id == newFocus.date)) {
-                    itemRefs.value.find((element) => element.id == newFocus.date).classList.add("focusedData");
+
+                const element = itemRefs.value.find((element) => element.id == newFocus.date);
+
+                if(element) {
+                    element.classList.add("focusedData");
+
+                    element.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                        inline: "nearest"
+                    });
                 }
             }
         })

@@ -58,7 +58,7 @@
 - [x] emit table date interaction
 - [x] calendar highlight
     - [x] highlight with uuid update
-    - [ ] scroll to
+    - [x] scroll to
 - [ ] graph highlight
 - [x] table highlight
     - [x] scroll to

@@ -195,16 +195,6 @@
                     rowRefs.value.find((element) => element.id == item.uuid).classList.remove("focusedData");
                 }
             }
-
-            //console.log(rowRefs.value.find((element) => element.id == activeData))
-
-            // if(oldFocus.date) {
-            //     itemRefs.value.find((element) => element.id == oldFocus.date).classList.remove("focusedData");
-            // }
-
-            // if (newFocus.date) {
-            //     itemRefs.value.find((element) => element.id == newFocus.date).classList.add("focusedData");
-            // }
         })
     });
 
