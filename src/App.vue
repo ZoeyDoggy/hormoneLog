@@ -36,34 +36,37 @@
 </script>
 
 <template>
-
-  <div class="inputDiv">
-    <input
-      type="url"
-      name="url"
-      id="url"
-      placeholder="http://localhost:3000"
-      pattern="http://.*"
-      size="30"
-      required 
-      :value="URL"
-      @change="event => URL = event.target.value"/>
-  </div>
-
-  <div class="inputDiv">
-    <select v-model="focusedRecipient">
-      <option v-for="name in recipients" :value="name">
-        {{ name }}
-      </option>
-    </select>
-  </div>
   
   <div id="topView">
     <Graph :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Graph>
-    <div id="debug" class="surface">
+    <div id="sideBar" class="surface">
+
+      <div class="inputDiv">
+        <input
+          type="url"
+          name="url"
+          id="url"
+          placeholder="http://localhost:3000"
+          pattern="http://.*"
+          size="30"
+          required 
+          :value="URL"
+          @change="event => URL = event.target.value"/>
+      </div>
+
+      <div class="inputDiv">
+        <select v-model="focusedRecipient">
+          <option v-for="name in recipients" :value="name">
+            {{ name }}
+          </option>
+        </select>
+      </div>
+
       <h3>debug</h3>
       <div>{{ activeData }}</div>
     </div>
+
+    
   </div>
   
 
@@ -84,8 +87,8 @@
 
     gap: 10px;
 
-    #debug {
-      width: 200px;
+    #sideBar {
+      width: 250px;
       font-size: 8pt;
     }
   }

@@ -3,7 +3,7 @@
 
     const emit = defineEmits(['update', 'activeData'])
 
-    import { SquarePen, Save, Trash, X, Check } from '@lucide/vue';
+    import { SquarePen, Save, Trash, X, Check, Syringe, TestTubeDiagonal } from '@lucide/vue';
 
     const props = defineProps(['URL', 'path', 'recipient', 'activeData']);
 
@@ -195,6 +195,10 @@
                     rowRefs.value.find((element) => element.id == item.uuid).classList.remove("focusedData");
                 }
             }
+
+            if(newFocus.uuid.length == 0 && oldFocus.uuid.length == 0 && newFocus.date != "") {
+                console.log('test')
+            }
         })
     });
 
@@ -215,6 +219,12 @@
 
 <template>
     <div class="graphDiv surface">
+        <div class="titleBar">
+            <Syringe v-if="props.path == 'injections'"/>
+            <TestTubeDiagonal v-else/>
+            <h3>{{ props.path }}</h3>
+        </div>
+        
         <table>
             <thead>
                 <tr>
@@ -297,7 +307,6 @@
         overscroll-behavior: none;
         pointer-events: auto;
 
-        margin-bottom: 20px;
 
         padding-top: 0px;
     }
@@ -354,7 +363,7 @@
         height: 14px;
         width: 14px;
     }
-    th {
+    th, h3 {
         text-transform: capitalize;
     }
 
@@ -376,6 +385,25 @@
 
         tr:nth-child(even) {
             background-color: var(--ctp-macchiato-crust);
+        }
+    }
+
+    .titleBar {
+        display: flex;
+        align-items: center;
+        margin: 0;
+
+        gap: 6px;
+        
+        padding: 0.8em 0em .8em 0.3em;
+
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        h3 {
+            margin: 0;
         }
     }
 </style>

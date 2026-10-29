@@ -35,11 +35,23 @@
 - [ ] dynamically update interval size
 - [ ] reduce repeated renders
 
+- [ ] tooltip update
+- [ ] style for highlighted data
+
 ### Table
+- [ ] collapsible tables
+
 - [ ] sort table
 - [ ] loading icon for DB actions
 
 - [ ] fix empty fields filling with null
+
+- [ ] hide recipient column if recipient is selected
+    - [ ] autofill recipient on submit or edit
+
+- [ ] add ability to hide any column
+- [ ] make columns scrollable
+- [ ] sticky time and buttons
 
 - [x] sticky top bar
 - [ ] sticky top bar padding
