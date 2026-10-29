@@ -70,9 +70,9 @@
   <div id="dataView">
     <Calendar :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests" :activeData="activeData" @activeData="(data) => activeData = data"></Calendar>
 
-    <Table :recipient="focusedRecipient" :URL="URL" :path="'injections'" id="injectionsTable" :activeData="activeData" @update="callback => injections = callback"></Table>
+    <Table :recipient="focusedRecipient" :URL="URL" :path="'injections'" id="injectionsTable" :activeData="activeData" @update="callback => injections = callback" @activeData="(data) => activeData = data"></Table>
   
-    <Table :recipient="focusedRecipient" :URL="URL" :path="'tests'" id="testsTable" :activeData="activeData" @update="callback => tests = callback"></Table>
+    <Table :recipient="focusedRecipient" :URL="URL" :path="'tests'" id="testsTable" :activeData="activeData" @update="callback => tests = callback" @activeData="(data) => activeData = data"></Table>
   </div>
 </template>
 
@@ -83,12 +83,14 @@
     flex-direction: row;
 
     gap: 10px;
+
+    #debug {
+      width: 200px;
+      font-size: 8pt;
+    }
   }
 
-  #debug {
-    width: 200px;
-    font-size: 8pt;
-  }
+
 
   #dataView {
     width: 100%;
@@ -100,19 +102,21 @@
     justify-content: space-between;
 
     gap: 10px;
+
+    #calendar {
+      flex-grow: 1;
+    }
+
+    #injectionsTable {
+      flex-grow: 2;
+    }
+    
+    #testsTable {
+      flex-grow: 2;
+    }
   }
 
-  #calendar {
-    flex-grow: 1;
-  }
-
-  #injectionsTable {
-    flex-grow: 2;
-  }
   
-  #testsTable {
-    flex-grow: 2;
-  }
 
   .inputDiv {
     padding: 2px;

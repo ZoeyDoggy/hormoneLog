@@ -55,8 +55,9 @@
 ### Cross interaction
 - [x] emit calendar date interaction
 - [ ] emit graph date interaction
-- [ ] emit table date interaction
+- [x] emit table date interaction
 - [x] calendar highlight
+    - [x] highlight with uuid update
     - [ ] scroll to
 - [ ] graph highlight
 - [x] table highlight

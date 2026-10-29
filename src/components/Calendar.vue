@@ -58,11 +58,15 @@
         watch(() => props.activeData, (newFocus, oldFocus) => {
 
             if(oldFocus.date) {
-                itemRefs.value.find((element) => element.id == oldFocus.date).classList.remove("focusedData");
+                if(itemRefs.value.find((element) => element.id == oldFocus.date)) {
+                    itemRefs.value.find((element) => element.id == oldFocus.date).classList.remove("focusedData");
+                }
             }
 
             if (newFocus.date) {
-                itemRefs.value.find((element) => element.id == newFocus.date).classList.add("focusedData");
+                if(itemRefs.value.find((element) => element.id == newFocus.date)) {
+                    itemRefs.value.find((element) => element.id == newFocus.date).classList.add("focusedData");
+                }
             }
         })
     })

@@ -1,7 +1,7 @@
 <script setup>
     import { ref, watch, useTemplateRef, onMounted } from "vue";
 
-    const emit = defineEmits(['update'])
+    const emit = defineEmits(['update', 'activeData'])
 
     import { SquarePen, Save, Trash, X, Check } from '@lucide/vue';
 
@@ -207,6 +207,20 @@
             // }
         })
     });
+
+    function updateActiveData(row) {
+
+        console.log(row)
+
+        const dateString = new Date(row.time).toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",});
+        console.log(dateString)
+
+        if(props.activeData.date === dateString) {
+            emit('activeData', {'uuid': [], 'date': ''})
+        } else {
+            emit('activeData', {'uuid': [{'uuid': row.uuid, 'type': row.ester, 'date': dateString}], 'date': dateString})
+        }
+    }
 </script>
 
 <template>
@@ -241,7 +255,13 @@
             <tbody>
             
                 <template v-for="row in result" :key="row.uuid">
-                    <tr v-if="row.recipient == props.recipient" :id="row.uuid" ref="rows" class="hoverInteract">
+                    <tr 
+                    v-if="row.recipient == props.recipient" 
+                    :id="row.uuid" 
+                    ref="rows" 
+                    class="hoverInteract"
+                    @click="updateActiveData(row)"
+                    >
                         <template v-for="(data, key) in row">
     
                             <template v-if="key != 'uuid'">
