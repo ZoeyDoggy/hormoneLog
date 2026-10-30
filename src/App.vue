@@ -26,6 +26,7 @@
   onMounted(() => {
         watch(() => injections.value, () => {
           recipients.value = Array.from( new Set( injections.value.map(a => a.recipient)));
+          recipients.value.push('All');
           // console.log(Array.from( new Set( injections.value.map(a => a.ester) ) ))
         })
         watch(() => tests.value, () => {

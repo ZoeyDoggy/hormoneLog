@@ -8,6 +8,7 @@
 - [ ] range view?
 - [ ] better styling on month title
 - [ ] calendar year
+- [x] reload on recipient change
 
 ### Mobile
 - [ ] mobile friendly add entry
@@ -37,6 +38,8 @@
 
 - [ ] tooltip update
 - [ ] style for highlighted data
+
+- [ ] show multiple people on graph if no recipient is selected
 
 ### Table
 - [ ] collapsible tables

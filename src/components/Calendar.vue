@@ -35,7 +35,7 @@
         watch(() => props.injectionsData, () => {
             
             for (const data of props.injectionsData) {
-                if (props.recipient.includes(data.recipient)) {
+                if (props.recipient.includes(data.recipient) || props.recipient.includes('All')) {
                     
                     const date = new Date(data.time);
                     dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.ester})
@@ -45,7 +45,7 @@
         watch(() => props.testsData, () => {
 
             for (const data of props.testsData) {
-                if (props.recipient.includes(data.recipient)) {
+                if (props.recipient.includes(data.recipient) || props.recipient.includes('All')) {
                     
                     const date = new Date(data.time);
                     dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.test})
@@ -53,6 +53,23 @@
             }
         })
         watch(() => props.recipient, () => {
+            dateLookup.value = [];
+
+            for (const data of props.injectionsData) {
+                if (props.recipient.includes(data.recipient) || props.recipient.includes('All')) {
+                    
+                    const date = new Date(data.time);
+                    dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.ester})
+                }
+            }
+
+            for (const data of props.testsData) {
+                if (props.recipient.includes(data.recipient) || props.recipient.includes('All')) {
+                    
+                    const date = new Date(data.time);
+                    dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.test})
+                }
+            }
         })
 
         watch(() => props.activeData, (newFocus, oldFocus) => {

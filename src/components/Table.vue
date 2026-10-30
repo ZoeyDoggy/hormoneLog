@@ -218,7 +218,7 @@
 
     function columnCollapse(item) {
         
-        if(item.includes('recipient') && props.recipient != '') {
+        if(item.includes('recipient') && props.recipient != 'All') {
             return 'collapsed';
         } else {
             return '';
@@ -267,7 +267,7 @@
             
                 <template v-for="row in result" :key="row.uuid">
                     <tr 
-                    v-if="row.recipient == props.recipient" 
+                    v-if="row.recipient == props.recipient  || props.recipient.includes('All')" 
                     :id="row.uuid" 
                     ref="rows" 
                     class="hoverInteract"
