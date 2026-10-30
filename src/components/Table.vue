@@ -215,6 +215,15 @@
             emit('activeData', {'uuid': [{'uuid': row.uuid, 'type': row.ester, 'date': dateString}], 'date': dateString})
         }
     }
+
+    function columnCollapse(item) {
+        
+        if(item.includes('recipient') && props.recipient != '') {
+            return 'collapsed';
+        } else {
+            return '';
+        }
+    }
 </script>
 
 <template>
@@ -223,20 +232,22 @@
             <Syringe v-if="props.path == 'injections'"/>
             <TestTubeDiagonal v-else/>
             <h3>{{ props.path }}</h3>
+            <div>{{ putParams }}</div>
+            <div>{{ postParams }}</div>
         </div>
         
         <table>
             <thead>
                 <tr>
                     <template v-for="item in Object.keys(result[0])">
-                        <th  v-if="item != 'uuid'" :class="`${item}Column`">{{ item }}</th>
+                        <th  v-if="item != 'uuid'" :class="`${item}Column ${columnCollapse(item)}`">{{ item }}</th>
                     </template>
                     <th :class="`buttonColumn`"></th>
                 </tr>
     
                 <tr>
                     <template v-for="(item, key) in result[0]">
-                        <td v-if="key != 'uuid'">
+                        <td v-if="key != 'uuid'" :class="columnCollapse(key)">
                             <div class="inputDiv"> 
                                 <select v-if="['ester', 'site', 'recipient', 'vial', 'test', 'unit'].includes(key)" :value="postParams.get(key)" @change="event => updatePostParams(key, event.target.value)">
                                     <option v-for="name in Array.from( new Set( result.map(a => a[key])))" :value="name">
@@ -265,8 +276,8 @@
                         <template v-for="(data, key) in row">
     
                             <template v-if="key != 'uuid'">
-                                <td v-if="focusRow != row.uuid">{{ formatData(key, data) }}</td>
-                                <td v-else><input :type="inputType[key]" :placeholder="key" :value="formatInput(key, putParams.get(key))" @change="event => updatePutParams(key, event.target.value)"></td>
+                                <td v-if="focusRow != row.uuid" :class="columnCollapse(key)">{{ formatData(key, data) }}</td>
+                                <td v-else><input :class="columnCollapse(key)" :type="inputType[key]" :placeholder="key" :value="formatInput(key, putParams.get(key))" @change="event => updatePutParams(key, event.target.value)"></td>
                             </template>
     
                         </template>
@@ -336,6 +347,11 @@
         margin: 0px;
 
         
+    }
+
+    .collapsed,
+    .collapsed {
+        display: none;
     }
 
     button {

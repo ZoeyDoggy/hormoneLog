@@ -46,7 +46,7 @@
 
 - [ ] fix empty fields filling with null
 
-- [ ] hide recipient column if recipient is selected
+- [x] hide recipient column if recipient is selected
     - [ ] autofill recipient on submit or edit
 
 - [ ] add ability to hide any column
