@@ -8,6 +8,7 @@
     const itemRefs = useTemplateRef('items');
 
     var exampleYear = {};
+    var calendarArray = {};
 
     exampleYear.year = 2026;
     exampleYear.months = [];
@@ -27,8 +28,49 @@
     }
 
     exampleYear.start = exampleYear.months[0].startNum;
+    
+    console.log(exampleYear);
 
     const dateLookup = ref([]);
+    const timeStart = ref(0);
+    const timeEnd = ref(Date.now());
+
+    function generateDateRange() {
+
+        if (props.injectionsData == undefined || props.testsData == undefined || props.injectionsData.length <= 1 || props.testsData.length <= 1) {
+            return;
+        }
+
+        const timeValues = props.injectionsData.map(a => a.time).concat(props.testsData.map(a => a.time));
+        timeStart.value = Math.min(...timeValues);
+        timeEnd.value = Math.max(...timeValues);
+
+        const startYear = new Date(timeStart.value).toLocaleString('default', { year: 'numeric' });
+        const endYear = new Date(timeEnd.value).toLocaleString('default', { year: 'numeric' });
+
+        for (var year = startYear; year <= endYear; year++) {
+            calendarArray[year] = {};
+
+            calendarArray[year].months = [];
+            calendarArray[year].total = 0;
+
+            for (let i = 0; i < 12; i++) {
+                let monthObject = {};
+
+                monthObject.month = (new Date(year, i)).toLocaleString('default', { month: 'long' });
+                monthObject.numberOfDays = 32 - new Date(year, i, 32).getDate();
+                monthObject.startNum = new Date(year, i, 1).getDay();
+                
+                calendarArray[year].months[i] = monthObject;
+                calendarArray[year].total += monthObject.numberOfDays;
+
+            }
+
+            calendarArray[year].start = calendarArray[year].months[0].startNum;
+            
+        }
+        console.log(calendarArray)
+    }
 
     onMounted(() => {
 
@@ -41,6 +83,8 @@
                     dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.ester})
                 }
             }
+
+            generateDateRange();
         })
         watch(() => props.testsData, () => {
 
@@ -51,6 +95,8 @@
                     dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.test})
                 }
             }
+
+            generateDateRange();
         })
         watch(() => props.recipient, () => {
             dateLookup.value = [];
@@ -70,6 +116,7 @@
                     dateLookup.value.push({'date': date.toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",}), 'uuid': data.uuid, 'type': data.test})
                 }
             }
+
         })
 
         watch(() => props.activeData, (newFocus, oldFocus) => {
@@ -110,42 +157,48 @@
 <template>
 
     <div id="calendar" class="surface">
-        <div>{{ exampleYear.year }}</div>
-        <div class="month" v-for="(month, monthIndex) in exampleYear.months">
+        <template v-for="(year, yearIndex) in calendarArray">
+            <div>{{ yearIndex }}</div>
 
-            <h3>{{ month.month }}</h3>
-            
-            <div class="dateGrid">
-                <div class="dateSquare hoverInteract" 
+            <div class="month" v-for="(month, monthIndex) in year.months">
+
+                <h3>{{ month.month }}</h3>
+
+                <div class="dateGrid">
+                    <div class="dateSquare hoverInteract" 
                     ref="items"
-                    :id="`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`"
+                    :id="`${monthIndex+1}/${dayIndex+1}/${yearIndex}`"
                     v-for="(day, dayIndex) in month.numberOfDays" 
                     v-bind:style= "[dayIndex === 0 ? {'grid-column-start': month.startNum + 1} : {'grid-column-start': '0'}]" 
-                    @click="updateActiveData(`${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)"
+                    @click="updateActiveData(`${monthIndex+1}/${dayIndex+1}/${yearIndex}`)"
                     >
-                    
-                    <template v-if="dateLookup.find((element) => element.date == `${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)">
-                        <div>
-                            <p>{{ day }}</p>
-                        </div>
-                        <template v-for="data in dateLookup.filter((element) => element.date == `${monthIndex+1}/${dayIndex+1}/${exampleYear.year}`)">
-                            <div class="indicator" v-bind:class="data.type" v-bind:id="data.uuid">
-                                <p v-if="data.type.includes('Estradiol') || data.type.includes('Testosterone')">{{ data.type.substring(0, 1) }}</p>
-                                <p v-else-if="data.type.includes('Enanthate')">een</p>
-                                <p v-else-if="data.type.includes('Valerate')">ev</p>
+                        <template v-if="dateLookup.find((element) => element.date == `${monthIndex+1}/${dayIndex+1}/${yearIndex}`)">
+                            <div>
+                                <p>{{ day }}</p>
                             </div>
+                            <template v-for="data in dateLookup.filter((element) => element.date == `${monthIndex+1}/${dayIndex+1}/${yearIndex}`)">
+                                <div class="indicator" v-bind:class="data.type" v-bind:id="data.uuid">
+                                    <p v-if="data.type.includes('Estradiol') || data.type.includes('Testosterone')">{{ data.type.substring(0, 1) }}</p>
+                                    <p v-else-if="data.type.includes('Enanthate')">een</p>
+                                    <p v-else-if="data.type.includes('Valerate')">ev</p>
+                                </div>
+                            </template>
                         </template>
-                    </template>
-                    <template v-else>
-                        <div>
-                            <p>{{ day }}</p>
-                        </div>
-                        
-                    </template>
+                        <template v-else>
+                            <div>
+                                <p>{{ day }}</p>
+                            </div>
+                            
+                        </template>
+                    </div>
                 </div>
             </div>
-        </div>
+        </template>
     </div>
+
+    
+
+    
 </template>
 
 

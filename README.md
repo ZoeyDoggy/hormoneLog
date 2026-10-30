@@ -4,10 +4,9 @@
 - [x] calendar view
 - [x] add labs to calendar
 - [x] dynamic colors for ester
-- [ ] 'infinite' scroll
-- [ ] range view?
+- [x] show all dates in dataset
 - [ ] better styling on month title
-- [ ] calendar year
+- [ ] styling on calendar year
 - [x] reload on recipient change
 
 ### Mobile
