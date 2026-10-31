@@ -82,4 +82,5 @@
 ### Styling 
 - [x] global hover style (started)
 - [x] global highlighted style
+- [ ] resize windows
 

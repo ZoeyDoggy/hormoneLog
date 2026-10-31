@@ -128,7 +128,7 @@
         const plotCanvas = Plot.plot({
             x: {type: "utc", grid: true},
             width: graphDiv.value.offsetWidth,
-            height: 350,
+            height: window.innerHeight/2.5,
 
             marks: [
                 Plot.frame(),
@@ -279,6 +279,8 @@
 
     #graphWindow {
         width: 100%;
+
+        padding-bottom: 0;
     }
 
     #rangeSelector {

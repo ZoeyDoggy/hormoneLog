@@ -39,7 +39,12 @@
 <template>
   
   <div id="topView">
-    <Graph :recipient="focusedRecipient" :injectionsData="injections" :testsData="tests"></Graph>
+    <Graph 
+      :recipient="focusedRecipient" 
+      :injectionsData="injections" 
+      :testsData="tests"
+      >
+    </Graph>
     <div id="sideBar" class="surface">
 
       <div class="inputDiv">

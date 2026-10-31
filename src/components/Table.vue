@@ -336,6 +336,7 @@
     }
     td, th {
         padding: 2px 5px 2px 5px;
+        font-size: 10pt;
     }
     td div {
         position: absolute;
