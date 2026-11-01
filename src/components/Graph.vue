@@ -72,6 +72,20 @@
         })
     })
 
+    function getHighestQuote(quotes, limit) {
+        let winner = null;
+        let winningQuote = null;
+        for (let {E2, Time} of quotes) {
+            if (Time > limit)
+            continue;
+            if (winningQuote === null || winningQuote < Time) {
+            winner = E2;
+            winningQuote = Time;
+            }
+        }
+        return winner;
+    }
+
     function plot() {
 
         if (props.injectionsData == undefined || props.testsData == undefined || props.injectionsData.length <= 1 || props.testsData.length <= 1) {
@@ -112,7 +126,7 @@
             }
         }
 
-        let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval + 7, 2500);
+        let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval + 7, 5000);
 
         for (let i = 0; i < customDoseCurve.length; i++) {
 
@@ -123,6 +137,16 @@
 
         for (let i = 0; i < targetRange.length; i++) {
             targetRange[i].time = epoch + Math.round(targetRange[i].time * 86400) * 1000;
+        }
+
+        const injectionArray = props.injectionsData.filter((object) => 
+                        object.recipient == props.recipient && 
+                        object.time >= viewStart.value && 
+                        object.time <= viewEnd.value);
+
+
+        for (const item of injectionArray) {
+            item['E2'] = getHighestQuote(customDoseCurve, item.time);
         }
 
         const plotCanvas = Plot.plot({
@@ -147,6 +171,18 @@
                     stroke: flavors.macchiato.colors.text.hex,
                     channels: {name: "Time"},
                     className: "customLine",
+                }),
+
+                Plot.dot(props.injectionsData.filter((object) => 
+                        object.recipient == props.recipient && 
+                        object.time >= viewStart.value && 
+                        object.time <= viewEnd.value), {
+                    x: 'time',
+                    y: 'E2',
+                    r: 3,
+                    fill: flavors.macchiato.colors.mauve.hex,
+                    fillOpacity: 0.15,
+                    channels: {name: "Time"},
                     tip: true
                 }),
 
@@ -161,6 +197,8 @@
                     fill: flavors.macchiato.colors.red.hex,
                     fillOpacity: 0.35,
                     stroke: flavors.macchiato.colors.red.hex,
+                    channels: {name: "Time"},
+                    tip: true
                 }),
 
                 Plot.dot(props.testsData.filter((object) => 
@@ -174,6 +212,8 @@
                     fill: flavors.macchiato.colors.blue.hex,
                     fillOpacity: 0.35,
                     stroke: flavors.macchiato.colors.blue.hex,
+                    channels: {name: "Time"},
+                    tip: true
                 }),
 
                 // Plot.areaY(targetRange, {

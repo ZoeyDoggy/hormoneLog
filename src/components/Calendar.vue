@@ -28,8 +28,6 @@
     }
 
     exampleYear.start = exampleYear.months[0].startNum;
-    
-    console.log(exampleYear);
 
     const dateLookup = ref([]);
     const timeStart = ref(0);
@@ -69,7 +67,6 @@
             calendarArray[year].start = calendarArray[year].months[0].startNum;
             
         }
-        console.log(calendarArray)
     }
 
     onMounted(() => {
