@@ -19,6 +19,8 @@
 
     const props = defineProps(['injectionsData', 'testsData', 'recipient']);
 
+    const emit = defineEmits(['activeData'])
+
     const graphDiv = useTemplateRef('graphDiv');
     const smallGraph = useTemplateRef('smallGraph');
 
@@ -32,6 +34,8 @@
     const frameTop = ref();
     const frameWidth = ref();
     const frameHeight = ref();
+
+    const renderTime = ref([]);
 
     function timeRange(event) {
 
@@ -86,7 +90,32 @@
         return winner;
     }
 
+    function updateActiveData(target, event) {
+
+        if(target != null) {
+            console.log(target);
+            console.log(event);
+
+            const dateString = new Date(target.time).toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",});
+            console.log(dateString)
+
+            emit('activeData', {'uuid': [{'uuid': target.uuid, 'type': target.ester, 'date': dateString}], 'date': dateString})
+
+            // if(props.activeData.date === dateString) {
+            //     emit('activeData', {'uuid': [], 'date': ''})
+            // } else {
+            //     emit('activeData', {'uuid': [{'uuid': row.uuid, 'type': row.ester, 'date': dateString}], 'date': dateString})
+            // }
+        } else {
+            console.log('deselect');
+            emit('activeData', {'uuid': [], 'date': ''})
+        }
+    }
+
     function plot() {
+
+        renderTime.value = [];
+        renderTime.value.push(performance.now())
 
         if (props.injectionsData == undefined || props.testsData == undefined || props.injectionsData.length <= 1 || props.testsData.length <= 1) {
             return;
@@ -94,7 +123,7 @@
 
         const timeValues = props.injectionsData.map(a => a.time).concat(props.testsData.map(a => a.time));
         timeStart.value = Math.min(...timeValues);
-        timeEnd.value = Math.max(...timeValues);
+        // timeEnd.value = Math.max(...timeValues);
 
         if (viewStart.value == undefined || viewEnd.value == undefined) {
 
@@ -125,8 +154,12 @@
                 
             }
         }
+        
+        renderTime.value.push(performance.now() - renderTime.value[0])
 
-        let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval + 7, 5000);
+        let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval, 5000);
+
+        renderTime.value.push(performance.now() - renderTime.value[0])
 
         for (let i = 0; i < customDoseCurve.length; i++) {
 
@@ -148,6 +181,8 @@
         for (const item of injectionArray) {
             item['E2'] = getHighestQuote(customDoseCurve, item.time);
         }
+
+        renderTime.value.push(performance.now() - renderTime.value[0])
 
         const plotCanvas = Plot.plot({
             x: {type: "utc", grid: true},
@@ -176,15 +211,18 @@
                 Plot.dot(props.injectionsData.filter((object) => 
                         object.recipient == props.recipient && 
                         object.time >= viewStart.value && 
-                        object.time <= viewEnd.value), {
-                    x: 'time',
-                    y: 'E2',
-                    r: 3,
-                    fill: flavors.macchiato.colors.mauve.hex,
-                    fillOpacity: 0.15,
-                    channels: {name: "Time"},
-                    tip: true
-                }),
+                        object.time <= viewEnd.value), 
+
+                    Plot.pointer({
+                        x: 'time',
+                        y: 'E2',
+                        r: 5,
+                        fill: flavors.macchiato.colors.mauve.hex,
+                        tip: {
+                            background: flavors.macchiato.colors.base.hex,
+                            color: flavors.macchiato.colors.text.hex,
+                        }
+                })),
 
                 Plot.dot(props.testsData.filter((object) => 
                         object.test == 'Estradiol' && 
@@ -228,6 +266,10 @@
                 })
             ]
         })
+
+        plotCanvas.addEventListener("input", (event) => {
+            updateActiveData(plotCanvas.value, event);
+        });
 
         graphDiv.value.innerHTML = '';
         graphDiv.value.append(plotCanvas);
@@ -276,6 +318,8 @@
 
         smallGraph.value.innerHTML = '';
         smallGraph.value.appendChild(smallCanvas);
+
+        renderTime.value.push(performance.now() - renderTime.value[0])
     }
 
     function createRegion(x, y, w, h) {
@@ -299,6 +343,7 @@
 <template>
 
     <div id="graphWindow" class="surface">
+        <p>{{ renderTime }}</p>
         <div ref="graphDiv" id="graph"></div>
         <div id="rangeSelector">
             <div ref="smallGraph" id="smallGraph"></div>

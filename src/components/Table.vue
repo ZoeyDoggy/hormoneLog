@@ -350,10 +350,10 @@
         
     }
 
-    .collapsed,
+    /* .collapsed,
     .collapsed {
         display: none;
-    }
+    } */
 
     button {
         height: inherit;

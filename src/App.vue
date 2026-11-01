@@ -43,6 +43,7 @@
       :recipient="focusedRecipient" 
       :injectionsData="injections" 
       :testsData="tests"
+      @activeData="(data) => activeData = data"
       >
     </Graph>
     <div id="sideBar" class="surface">

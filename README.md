@@ -32,13 +32,17 @@
 
 - [ ] area of uncertainty
 
-- [ ] dynamically update interval size
-- [ ] reduce repeated renders
-
 - [ ] tooltip update
 - [ ] style for highlighted data
 
 - [ ] show multiple people on graph if no recipient is selected
+
+#### Optimization
+- [ ] dynamically update interval size
+    - [ ] refine line in background ?
+- [ ] reduce repeated renders
+- [ ] separate different update types (full line reload for changed data, render reload for view change)
+
 
 ### Table
 - [ ] collapsible tables
@@ -68,7 +72,7 @@
 
 ### Cross interaction
 - [x] emit calendar date interaction
-- [ ] emit graph date interaction
+- [x] emit graph date interaction
 - [x] emit table date interaction
 - [x] calendar highlight
     - [x] highlight with uuid update
