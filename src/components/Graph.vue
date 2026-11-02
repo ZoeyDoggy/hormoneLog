@@ -431,22 +431,14 @@
         background: transparent; /* Otherwise white in Chrome */
     }
 
-    input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-    }
-
     input[type=range]:focus {
         outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
     }
 
-    input[type=range]::-ms-track {
-        width: 100%;
-        cursor: pointer;
 
-        /* Hides the slider so custom styles can be added */
-        background: transparent; 
-        border-color: transparent;
-        color: transparent;
+
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
     }
 
     input[type=range]::-webkit-slider-thumb {
@@ -470,5 +462,51 @@
 
     input[type=range]::-webkit-slider-thumb:hover, input[type=range]::-webkit-slider-thumb:active {
         outline: 3px solid var(--ctp-macchiato-lavender);
+    }
+
+    input[type=range]::-moz-range-thumb:hover, input[type=range]::-moz-range-thumb:active {
+        outline: 3px solid var(--ctp-macchiato-lavender);
+    }
+
+    input[type=range]::-moz-range-thumb {
+        pointer-events: auto;
+        left: -10px;
+        height: v-bind(frameHeight + 'px');
+        width: 6px;
+        border-radius: 10px;
+        background: var(--ctp-macchiato-rosewater);
+        cursor: pointer;
+        margin-top: 0px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+        box-sizing: content-box;
+
+        border: none;
+
+        outline: 0px solid var(--ctp-macchiato-lavender);
+
+        transition-property: outline;
+        transition-duration: .2s;
+        transition-delay: 0s;
+    }
+
+
+
+    input[type=range]::-ms-track {
+        width: 100%;
+        cursor: pointer;
+
+        /* Hides the slider so custom styles can be added */
+        background: transparent; 
+        border-color: transparent;
+        color: transparent;
+    }
+
+    input[type=range]::-moz-range-track {
+        width: 100%;
+        cursor: pointer;
+
+        /* Hides the slider so custom styles can be added */
+        background: transparent; 
+        border-color: transparent;
+        color: transparent;
     }
 </style>

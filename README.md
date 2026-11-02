@@ -26,7 +26,8 @@
 - [ ] target range
 
 - [ ] exact date ranges on rangeView
-- [ ] firefox + chrome support for rangeView
+- [x] firefox support for rangeView
+- [ ] chrome support for rangeView
 - [ ] make rangeview auto update when set to zero
 - [ ] set rangeview to zero when at the start or end of graph
 
