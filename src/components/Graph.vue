@@ -74,6 +74,38 @@
             //console.log(props.testsData);
             plot();
         })
+
+        watch(() => props.activeData, (newFocus, oldFocus) => {
+
+            console.log(newFocus);
+            console.log(oldFocus);
+
+            // for(const item of newFocus.uuid) {
+            //     const element = rowRefs.value.find((element) => element.id == item.uuid);
+                
+            //     if (element) {
+            //         element.classList.add("focusedData");
+
+            //         element.scrollIntoView({
+            //             behavior: "smooth",
+            //             block: "center",
+            //             inline: "nearest"
+            //         });
+            //     }
+            // }
+
+            // for(const item of oldFocus.uuid) {
+            //     const uuid = rowRefs.value.find((element) => element.id == item.uuid);
+                
+            //     if (uuid) {
+            //         rowRefs.value.find((element) => element.id == item.uuid).classList.remove("focusedData");
+            //     }
+            // }
+
+            // if(newFocus.uuid.length == 0 && oldFocus.uuid.length == 0 && newFocus.date != "") {
+            //     console.log('test')
+            // }
+        })
     })
 
     function getHighestQuote(quotes, limit) {
@@ -93,19 +125,10 @@
     function updateActiveData(target, event) {
 
         if(target != null) {
-            console.log(target);
-            console.log(event);
 
             const dateString = new Date(target.time).toLocaleDateString(undefined, {year: "numeric",month: "numeric",day: "numeric",});
-            console.log(dateString)
 
             emit('activeData', {'uuid': [{'uuid': target.uuid, 'type': target.ester, 'date': dateString}], 'date': dateString})
-
-            // if(props.activeData.date === dateString) {
-            //     emit('activeData', {'uuid': [], 'date': ''})
-            // } else {
-            //     emit('activeData', {'uuid': [{'uuid': row.uuid, 'type': row.ester, 'date': dateString}], 'date': dateString})
-            // }
         } else {
             console.log('deselect');
             emit('activeData', {'uuid': [], 'date': ''})
@@ -221,6 +244,7 @@
                         tip: {
                             background: flavors.macchiato.colors.base.hex,
                             color: flavors.macchiato.colors.text.hex,
+                            "backdrop-filter": "blur(50px)"
                         }
                 })),
 

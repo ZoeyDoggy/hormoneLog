@@ -37,6 +37,8 @@
 
 - [ ] show multiple people on graph if no recipient is selected
 
+- [ ] evaluate migrating to plotly
+
 #### Optimization
 - [ ] dynamically update interval size
     - [ ] refine line in background ?
