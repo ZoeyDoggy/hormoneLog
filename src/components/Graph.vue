@@ -24,6 +24,8 @@
     const graphDiv = useTemplateRef('graphDiv');
     const smallGraph = useTemplateRef('smallGraph');
 
+    const plotlyDiv = useTemplateRef('plotlyDiv');
+
     const timeStart = ref(0);
     const timeEnd = ref(Date.now());
 
@@ -362,12 +364,14 @@
     function convertRange( value, r1, r2 ) { 
         return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
     }
+
 </script>
 
 <template>
 
     <div id="graphWindow" class="surface">
         <p>{{ renderTime }}</p>
+        <div ref="plotlyDiv"></div>
         <div ref="graphDiv" id="graph"></div>
         <div id="rangeSelector">
             <div ref="smallGraph" id="smallGraph"></div>
