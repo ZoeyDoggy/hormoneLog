@@ -2,6 +2,7 @@
 
     import { useTemplateRef, onMounted, watch, ref } from 'vue'
     import * as Plot from "@observablehq/plot";
+    import Plotly from 'plotly.js-dist-min'
     import { flavors } from "@catppuccin/palette";
     import {
         e2multidose3C,
@@ -24,7 +25,7 @@
     const graphDiv = useTemplateRef('graphDiv');
     const smallGraph = useTemplateRef('smallGraph');
 
-    const plotlyDiv = useTemplateRef('plotlyDiv');
+    // const plotlyDiv = useTemplateRef('plotlyDiv');
 
     const timeStart = ref(0);
     const timeEnd = ref(Date.now());
@@ -61,6 +62,7 @@
 
         plot();
     }
+
 
     onMounted(() => {
 
@@ -108,6 +110,7 @@
             //     console.log('test')
             // }
         })
+
     })
 
     function getHighestQuote(quotes, limit) {
@@ -293,12 +296,49 @@
             ]
         })
 
+        var estradiolCurve = {
+            x: customDoseCurve.map(a => a.Time),
+            y: customDoseCurve.map(a => a.E2),
+            type: 'scatter'
+        };
+
+        var data = [estradiolCurve];
+
+        var layout = {
+            title: {
+            },
+
+            showlegend: true,
+
+            margin: {
+                l: 50,
+                r: 80,
+                t: 40,
+                b: 40,
+            },
+
+            paper_bgcolor: flavors.macchiato.colors.crust.hex,
+            plot_bgcolor: flavors.macchiato.colors.crust.hex,
+
+            font: {
+                color: flavors.macchiato.colors.text.hex
+            },
+        };
+
+        Plotly.newPlot('plotlyDiv', data, layout, 
+        {
+            scrollZoom: false, 
+            displayModeBar: false, 
+            displayLogo: false, 
+            responsive: true
+        });
+
         plotCanvas.addEventListener("input", (event) => {
             updateActiveData(plotCanvas.value, event);
         });
 
-        graphDiv.value.innerHTML = '';
-        graphDiv.value.append(plotCanvas);
+        // graphDiv.value.innerHTML = '';
+        // graphDiv.value.append(plotCanvas);
 
         const smallCanvas = Plot.plot({
             x: {type: "utc", grid: true},
@@ -371,7 +411,7 @@
 
     <div id="graphWindow" class="surface">
         <p>{{ renderTime }}</p>
-        <div ref="plotlyDiv"></div>
+        <div id="plotlyDiv"></div>
         <div ref="graphDiv" id="graph"></div>
         <div id="rangeSelector">
             <div ref="smallGraph" id="smallGraph"></div>
