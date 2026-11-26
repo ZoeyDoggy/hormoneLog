@@ -22,46 +22,13 @@
 
     const emit = defineEmits(['activeData'])
 
-    const graphDiv = useTemplateRef('graphDiv');
-    const smallGraph = useTemplateRef('smallGraph');
-
-    // const plotlyDiv = useTemplateRef('plotlyDiv');
-
     const timeStart = ref(0);
     const timeEnd = ref(Date.now());
 
     const viewStart = ref(Number(localStorage.getItem("viewStart")));
     const viewEnd = ref(Number(localStorage.getItem("viewEnd")));
 
-    const frameLeft = ref();
-    const frameTop = ref();
-    const frameWidth = ref();
-    const frameHeight = ref();
-
     const renderTime = ref([]);
-
-    function timeRange(event) {
-
-        if (event.target.id == 'viewStart') {
-
-            viewStart.value = event.target.value;
-            localStorage.setItem("viewStart", viewStart.value);
-        } else {
-
-            viewEnd.value = event.target.value;
-            localStorage.setItem("viewEnd", viewEnd.value);
-        }
-        plot();
-    }
-
-    function resetView() {
-        viewStart.value = timeStart.value;
-        localStorage.setItem("viewStart", viewStart.value);
-        viewEnd.value = timeEnd.value;
-        localStorage.setItem("viewEnd", viewEnd.value);
-
-        plot();
-    }
 
 
     onMounted(() => {
@@ -83,32 +50,6 @@
 
             console.log(newFocus);
             console.log(oldFocus);
-
-            // for(const item of newFocus.uuid) {
-            //     const element = rowRefs.value.find((element) => element.id == item.uuid);
-                
-            //     if (element) {
-            //         element.classList.add("focusedData");
-
-            //         element.scrollIntoView({
-            //             behavior: "smooth",
-            //             block: "center",
-            //             inline: "nearest"
-            //         });
-            //     }
-            // }
-
-            // for(const item of oldFocus.uuid) {
-            //     const uuid = rowRefs.value.find((element) => element.id == item.uuid);
-                
-            //     if (uuid) {
-            //         rowRefs.value.find((element) => element.id == item.uuid).classList.remove("focusedData");
-            //     }
-            // }
-
-            // if(newFocus.uuid.length == 0 && oldFocus.uuid.length == 0 && newFocus.date != "") {
-            //     console.log('test')
-            // }
         })
 
     })
@@ -185,7 +126,7 @@
         
         renderTime.value.push(performance.now() - renderTime.value[0])
 
-        let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval, 5000);
+        let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval, 25000);
 
         renderTime.value.push(performance.now() - renderTime.value[0])
 
@@ -212,97 +153,60 @@
 
         renderTime.value.push(performance.now() - renderTime.value[0])
 
-        const plotCanvas = Plot.plot({
-            x: {type: "utc", grid: true},
-            width: graphDiv.value.offsetWidth,
-            height: window.innerHeight/2.5,
-
-            marks: [
-                Plot.frame(),
-                Plot.axisY({anchor: "left", tickSpacing: 50}),
-                Plot.axisY({anchor: "right", tickSpacing: 50}),
-
-                Plot.ruleX([Number(viewStart.value), Number(viewEnd.value)], {stroke: 'none'}),
-                Plot.ruleY([-50, 800], {stroke: 'none'}),
-
-                Plot.line(customDoseCurve.filter((data) => 
-                        data.Time >= viewStart.value && 
-                        data.Time <= viewEnd.value), {
-                    x: 'Time',
-                    y: 'E2',
-                    r: 1,
-                    stroke: flavors.macchiato.colors.text.hex,
-                    channels: {name: "Time"},
-                    className: "customLine",
-                }),
-
-                Plot.dot(props.injectionsData.filter((object) => 
-                        object.recipient == props.recipient && 
-                        object.time >= viewStart.value && 
-                        object.time <= viewEnd.value), 
-
-                    Plot.pointer({
-                        x: 'time',
-                        y: 'E2',
-                        r: 5,
-                        fill: flavors.macchiato.colors.mauve.hex,
-                        tip: {
-                            background: flavors.macchiato.colors.base.hex,
-                            color: flavors.macchiato.colors.text.hex,
-                            "backdrop-filter": "blur(50px)"
-                        }
-                })),
-
-                Plot.dot(props.testsData.filter((object) => 
-                        object.test == 'Estradiol' && 
-                        object.recipient == props.recipient && 
-                        object.time >= viewStart.value && 
-                        object.time <= viewEnd.value), {
-                    x: "time", 
-                    y: "value",
-                    r: 3,
-                    fill: flavors.macchiato.colors.red.hex,
-                    fillOpacity: 0.35,
-                    stroke: flavors.macchiato.colors.red.hex,
-                    channels: {name: "Time"},
-                    tip: true
-                }),
-
-                Plot.dot(props.testsData.filter((object) => 
-                        object.test == 'Testosterone' && 
-                        object.recipient == props.recipient && 
-                        object.time >= viewStart.value && 
-                        object.time <= viewEnd.value), {
-                    x: "time", 
-                    y: "value",
-                    r: 3,
-                    fill: flavors.macchiato.colors.blue.hex,
-                    fillOpacity: 0.35,
-                    stroke: flavors.macchiato.colors.blue.hex,
-                    channels: {name: "Time"},
-                    tip: true
-                }),
-
-                // Plot.areaY(targetRange, {
-                //     x: 'time', y1: 'lower', y2: 'upper',
-                //     fill: 'orange',
-                //     fillOpacity: 0.15
-                // }),
-                Plot.text(['WPATH target range'], {
-                    x: Number(viewEnd.value), y: 150 * conversionFactor, rotate: 90,
-                    fill: 'white',
-                    frameAnchor: 'middle', textAnchor: 'middle', lineAnchor: 'bottom'
-                })
-            ]
-        })
+        var filteredCurve = customDoseCurve.filter((data) => 
+            data.Time >= viewStart.value && 
+            data.Time <= viewEnd.value);
 
         var estradiolCurve = {
-            x: customDoseCurve.map(a => a.Time),
-            y: customDoseCurve.map(a => a.E2),
-            type: 'scatter'
+            x: filteredCurve.map(a => a.Time),
+            y: filteredCurve.map(a => a.E2),
+            type: 'scatter',
+            name: 'Estimated Estradiol Levels', 
+            line: {
+                color: flavors.macchiato.colors.text.hex,
+                width: 1
+            },
         };
 
-        var data = [estradiolCurve];
+        var filteredEstradiol = props.testsData.filter((object) => 
+            object.test == 'Estradiol' && 
+            object.recipient == props.recipient && 
+            object.time >= viewStart.value && 
+            object.time <= viewEnd.value);
+
+        var estradiolLevels = {
+            x: filteredEstradiol.map(a => a.time),
+            y: filteredEstradiol.map(a => a.value),
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Estradiol Labs', 
+            marker: {
+                color: flavors.macchiato.colors.red.hex,
+                size: 5
+            }
+        };
+
+        var filteredTestosterone = props.testsData.filter((object) => 
+            object.test == 'Testosterone' && 
+            object.recipient == props.recipient && 
+            object.time >= viewStart.value && 
+            object.time <= viewEnd.value);
+
+            console.log(filteredEstradiol);
+
+        var testosteroneLevels = {
+            x: filteredTestosterone.map(a => a.time),
+            y: filteredTestosterone.map(a => a.value),
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Testosterone Labs', 
+                        marker: {
+                color: flavors.macchiato.colors.blue.hex,
+                size: 5
+            }
+        };
+
+        var data = [estradiolCurve, estradiolLevels, testosteroneLevels];
 
         var layout = {
             title: {
@@ -323,6 +227,28 @@
             font: {
                 color: flavors.macchiato.colors.text.hex
             },
+
+            xaxis: {
+                autorange: true,
+                range: [],
+                rangeselector: {buttons: [
+                    {
+                    count: 1,
+                    label: '1m',
+                    step: 'month',
+                    stepmode: 'backward'
+                    },
+                    {
+                    count: 6,
+                    label: '6m',
+                    step: 'month',
+                    stepmode: 'backward'
+                    },
+                    {step: 'all'}
+                ]},
+                rangeslider: {range: []},
+                type: 'date'
+            }
         };
 
         Plotly.newPlot('plotlyDiv', data, layout, 
@@ -331,78 +257,9 @@
             displayModeBar: false, 
             displayLogo: false, 
             responsive: true
-        });
-
-        plotCanvas.addEventListener("input", (event) => {
-            updateActiveData(plotCanvas.value, event);
-        });
-
-        // graphDiv.value.innerHTML = '';
-        // graphDiv.value.append(plotCanvas);
-
-        const smallCanvas = Plot.plot({
-            x: {type: "utc", grid: true},
-            width: smallGraph.value.offsetWidth,
-            height: '100',
-
-            marks: [
-                Plot.frame({stroke: 'none', className: 'smallGraphFrame'}),
-                Plot.ruleX([timeStart.value], {stroke: 'none'}),
-                Plot.ruleX([timeEnd.value], {stroke: 'none'}),
-                Plot.axisY({label: "", labelArrow: "none", anchor: "left", ticks: 0}),
-                Plot.axisY({label: "", labelArrow: "none", anchor: "right", ticks: 0}),
-
-                Plot.line(customDoseCurve, {
-                    x: 'Time',
-                    y: 'E2',
-                    r: 1,
-                    stroke: flavors.macchiato.colors.text.hex,
-                }),
-            ]
-        })
-
-        const frameObject = smallCanvas.getElementsByClassName("smallGraphFrame")[0];
-        frameLeft.value = Number(frameObject.getAttribute('x'));
-        frameTop.value = Number(frameObject.getAttribute('y'));
-
-        frameWidth.value = Number(frameObject.getAttribute('width'));
-        frameHeight.value = Number(frameObject.getAttribute('height'));
-
-        smallCanvas.appendChild(createRegion(
-            frameLeft.value, 
-            frameTop.value, 
-            convertRange( viewStart.value, [ timeStart.value, timeEnd.value ], [ frameLeft.value, frameLeft.value + frameWidth.value ] ) - frameLeft.value, 
-            frameHeight.value
-        ));
-
-        smallCanvas.appendChild(createRegion(
-            convertRange( viewEnd.value, [ timeStart.value, timeEnd.value ], [ frameLeft.value, frameLeft.value + frameWidth.value ] ), 
-            frameTop.value, 
-            frameWidth.value - convertRange( viewEnd.value, [ timeStart.value, timeEnd.value ], [ frameLeft.value, frameLeft.value + frameWidth .value] ) + frameLeft.value, 
-            frameHeight.value
-        ));
-
-        smallGraph.value.innerHTML = '';
-        smallGraph.value.appendChild(smallCanvas);
+        });  
 
         renderTime.value.push(performance.now() - renderTime.value[0])
-    }
-
-    function createRegion(x, y, w, h) {
-        let region = document.createElementNS('http://www.w3.org/2000/svg','rect');
-
-        region.setAttribute('x',x);
-        region.setAttribute('y',y);
-        region.setAttribute('height',h);
-        region.setAttribute('width', w);
-
-        region.setAttribute('class', 'rangeFill');
-
-        return region;
-    }
-
-    function convertRange( value, r1, r2 ) { 
-        return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
     }
 
 </script>
@@ -412,19 +269,6 @@
     <div id="graphWindow" class="surface">
         <p>{{ renderTime }}</p>
         <div id="plotlyDiv"></div>
-        <div ref="graphDiv" id="graph"></div>
-        <div id="rangeSelector">
-            <div ref="smallGraph" id="smallGraph"></div>
-            <div id="rangeContainer">
-                <input class="rangeSlider" type="range" id="viewStart" name="viewStart" :min="timeStart" :max="timeEnd" :value="viewStart" @input="event => timeRange(event)"/>
-                <input class="rangeSlider" type="range" id="viewEnd" name="viewEnd" :min="timeStart" :max="timeEnd" :value="viewEnd" @input="event => timeRange(event)"/>
-            </div>
-        </div>
-        
-        <!-- <button @click="resetView"><RotateCcw /></button> -->
-
-
-        
     </div>
 </template>
 
@@ -434,123 +278,5 @@
         width: 100%;
 
         padding-bottom: 0;
-    }
-
-    #rangeSelector {
-        position: relative;
-        height: 110px;
-    }
-
-    #smallGraph {
-        position: absolute;
-        height: 100%;
-        width: 100%;
-    }
-
-    #rangeContainer {
-        position: absolute;
-        left: v-bind(frameLeft-5 + 'px');
-        top: v-bind(frameTop + 'px');
-        width: v-bind(frameWidth+10 + 'px');
-        height: v-bind(frameHeight + 'px');
-    }
-    
-    .rangeFill {
-        fill: var(--ctp-macchiato-base);
-        stroke: var(--ctp-macchiato-base);
-        rx: 5px;
-        opacity: 0.7;
-    }
-
-    .rangeSlider {
-        position: absolute;
-        pointer-events: none;
-        width: 100%;
-        margin: 0px;
-    }
-
-    input[type=range] {
-        -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-        width: 100%; /* Specific width is required for Firefox. */
-        background: transparent; /* Otherwise white in Chrome */
-    }
-
-    input[type=range]:focus {
-        outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
-    }
-
-
-
-    input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-    }
-
-    input[type=range]::-webkit-slider-thumb {
-        pointer-events: auto;
-        -webkit-appearance: none;
-        left: -10px;
-        height: v-bind(frameHeight + 'px');
-        width: 6px;
-        border-radius: 3px;
-        background: var(--ctp-macchiato-rosewater);
-        cursor: pointer;
-        margin-top: 0px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-        box-sizing: content-box;
-
-        outline: 0px solid var(--ctp-macchiato-lavender);
-
-        transition-property: outline;
-        transition-duration: .2s;
-        transition-delay: 0s;
-    }
-
-    input[type=range]::-webkit-slider-thumb:hover, input[type=range]::-webkit-slider-thumb:active {
-        outline: 3px solid var(--ctp-macchiato-lavender);
-    }
-
-    input[type=range]::-moz-range-thumb:hover, input[type=range]::-moz-range-thumb:active {
-        outline: 3px solid var(--ctp-macchiato-lavender);
-    }
-
-    input[type=range]::-moz-range-thumb {
-        pointer-events: auto;
-        left: -10px;
-        height: v-bind(frameHeight + 'px');
-        width: 6px;
-        border-radius: 10px;
-        background: var(--ctp-macchiato-rosewater);
-        cursor: pointer;
-        margin-top: 0px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-        box-sizing: content-box;
-
-        border: none;
-
-        outline: 0px solid var(--ctp-macchiato-lavender);
-
-        transition-property: outline;
-        transition-duration: .2s;
-        transition-delay: 0s;
-    }
-
-
-
-    input[type=range]::-ms-track {
-        width: 100%;
-        cursor: pointer;
-
-        /* Hides the slider so custom styles can be added */
-        background: transparent; 
-        border-color: transparent;
-        color: transparent;
-    }
-
-    input[type=range]::-moz-range-track {
-        width: 100%;
-        cursor: pointer;
-
-        /* Hides the slider so custom styles can be added */
-        background: transparent; 
-        border-color: transparent;
-        color: transparent;
     }
 </style>
