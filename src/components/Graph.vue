@@ -181,8 +181,12 @@
             type: 'scatter',
             name: 'Estradiol Labs', 
             marker: {
-                color: flavors.macchiato.colors.red.hex,
-                size: 5
+                color: `rgb(${flavors.macchiato.colors.red.rgb.r}, ${flavors.macchiato.colors.red.rgb.g}, ${flavors.macchiato.colors.red.rgb.b}, 0.4)`,
+                size: 5,
+                line: {
+                    color: flavors.macchiato.colors.red.hex,
+                    width: 1
+                }
             }
         };
 
@@ -200,9 +204,13 @@
             mode: 'markers',
             type: 'scatter',
             name: 'Testosterone Labs', 
-                        marker: {
-                color: flavors.macchiato.colors.blue.hex,
-                size: 5
+            marker: {
+                color: `rgb(${flavors.macchiato.colors.blue.rgb.r}, ${flavors.macchiato.colors.blue.rgb.g}, ${flavors.macchiato.colors.blue.rgb.b}, 0.4)`,
+                size: 5,
+                line: {
+                    color: flavors.macchiato.colors.blue.hex,
+                    width: 1
+                }
             }
         };
 
@@ -213,12 +221,17 @@
             },
 
             showlegend: true,
+            legend: {
+                "orientation": "h",
+                x: 0,
+                y: 1.2
+            },
 
             margin: {
-                l: 50,
-                r: 80,
-                t: 40,
-                b: 40,
+                l: 40,
+                r: 30,
+                t: 30,
+                b: 20,
             },
 
             paper_bgcolor: flavors.macchiato.colors.crust.hex,
@@ -231,21 +244,21 @@
             xaxis: {
                 autorange: true,
                 range: [],
-                rangeselector: {buttons: [
-                    {
-                    count: 1,
-                    label: '1m',
-                    step: 'month',
-                    stepmode: 'backward'
-                    },
-                    {
-                    count: 6,
-                    label: '6m',
-                    step: 'month',
-                    stepmode: 'backward'
-                    },
-                    {step: 'all'}
-                ]},
+                // rangeselector: {buttons: [
+                //     {
+                //     count: 1,
+                //     label: '1m',
+                //     step: 'month',
+                //     stepmode: 'backward'
+                //     },
+                //     {
+                //     count: 6,
+                //     label: '6m',
+                //     step: 'month',
+                //     stepmode: 'backward'
+                //     },
+                //     {step: 'all'}
+                // ]},
                 rangeslider: {range: []},
                 type: 'date'
             }
@@ -267,7 +280,7 @@
 <template>
 
     <div id="graphWindow" class="surface">
-        <p>{{ renderTime }}</p>
+        <!-- <p>{{ renderTime }}</p> -->
         <div id="plotlyDiv"></div>
     </div>
 </template>
