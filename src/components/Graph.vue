@@ -1,7 +1,6 @@
 <script setup>
 
     import { useTemplateRef, onMounted, watch, ref } from 'vue'
-    import * as Plot from "@observablehq/plot";
     import Plotly from 'plotly.js-dist-min'
     import { flavors } from "@catppuccin/palette";
     import {
@@ -126,7 +125,7 @@
         
         renderTime.value.push(performance.now() - renderTime.value[0])
 
-        let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval, 25000);
+        let customDoseCurve = fillCurve(t => e2multidose3C(t, doses, times, models, conversionFactor, false, false), 0, interval, 5000);
 
         renderTime.value.push(performance.now() - renderTime.value[0])
 
@@ -142,9 +141,9 @@
         }
 
         const injectionArray = props.injectionsData.filter((object) => 
-                        object.recipient == props.recipient && 
-                        object.time >= viewStart.value && 
-                        object.time <= viewEnd.value);
+            object.recipient == props.recipient && 
+            object.time >= viewStart.value && 
+            object.time <= viewEnd.value);
 
 
         for (const item of injectionArray) {
@@ -153,13 +152,9 @@
 
         renderTime.value.push(performance.now() - renderTime.value[0])
 
-        var filteredCurve = customDoseCurve.filter((data) => 
-            data.Time >= viewStart.value && 
-            data.Time <= viewEnd.value);
-
         var estradiolCurve = {
-            x: filteredCurve.map(a => a.Time),
-            y: filteredCurve.map(a => a.E2),
+            x: customDoseCurve.map(a => a.Time),
+            y: customDoseCurve.map(a => a.E2),
             type: 'scatter',
             name: 'Estimated Estradiol Levels', 
             line: {
@@ -168,15 +163,12 @@
             },
         };
 
-        var filteredEstradiol = props.testsData.filter((object) => 
-            object.test == 'Estradiol' && 
-            object.recipient == props.recipient && 
-            object.time >= viewStart.value && 
-            object.time <= viewEnd.value);
+        var filteredEstradiol = props.testsData.filter((object) => object.test == 'Estradiol' && object.recipient == props.recipient);
 
         var estradiolLevels = {
             x: filteredEstradiol.map(a => a.time),
             y: filteredEstradiol.map(a => a.value),
+            customdata: filteredEstradiol.map(a => a.uuid),
             mode: 'markers',
             type: 'scatter',
             name: 'Estradiol Labs', 
@@ -190,17 +182,12 @@
             }
         };
 
-        var filteredTestosterone = props.testsData.filter((object) => 
-            object.test == 'Testosterone' && 
-            object.recipient == props.recipient && 
-            object.time >= viewStart.value && 
-            object.time <= viewEnd.value);
-
-            console.log(filteredEstradiol);
+        var filteredTestosterone = props.testsData.filter((object) => object.test == 'Testosterone' && object.recipient == props.recipient);
 
         var testosteroneLevels = {
             x: filteredTestosterone.map(a => a.time),
             y: filteredTestosterone.map(a => a.value),
+            customdata: filteredTestosterone.map(a => a.uuid),
             mode: 'markers',
             type: 'scatter',
             name: 'Testosterone Labs', 
@@ -260,8 +247,32 @@
                 //     {step: 'all'}
                 // ]},
                 rangeslider: {range: []},
-                type: 'date'
-            }
+                type: 'date',
+            },
+
+            shapes: [
+                //should auto scale to top of graph
+                {
+                    type: 'rect',
+                    xref: 'x',
+                    yref: 'paper',
+                    x0: customDoseCurve[customDoseCurve.length-1].Time,
+                    y0: 0,
+                    x1: customDoseCurve[customDoseCurve.length-1].Time,
+                    y1: 1,
+                    line: {
+                        color: flavors.macchiato.colors.mauve.hex,
+                        width: 2
+                    },
+                    label: {
+                        text: `E2: ${Math.round(customDoseCurve[customDoseCurve.length-1].E2)}`,
+                        font: { size: 8, color: flavors.macchiato.colors.mauve.hex },
+                        textposition: 'top center',
+                        textangle: 0,
+                        yanchor: 'bottom',
+                    },
+                },
+            ],
         };
 
         Plotly.newPlot('plotlyDiv', data, layout, 
@@ -271,6 +282,19 @@
             displayLogo: false, 
             responsive: true
         });  
+
+        document.getElementById('plotlyDiv').on('plotly_click', function(data){
+            console.log(data.points[0].customdata);
+            // var pts = '';
+            // for(var i=0; i < data.points.length; i++){
+            //     pts = 'x = '+data.points[i].x +'\ny = '+
+            //         data.points[i].y.toPrecision(4) + '\n\n';
+            //         alert();
+            //         console.log(data.points[i])
+            // }
+            // alert('Closest point clicked:\n\n'+pts);
+            
+        });
 
         renderTime.value.push(performance.now() - renderTime.value[0])
     }
